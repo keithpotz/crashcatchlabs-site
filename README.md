@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # CrashCatch Labs Website
 
 This repository contains the marketing site for:
@@ -21,3 +22,6 @@ Any push to the `main` branch triggers automatic deployment via Cloudflare Pages
 
 - CrashCatch Runtime (MIT)
 - CrashCatch Analyze (Private)
+=======
+dfdfdafv
+>>>>>>> Stashed changes
