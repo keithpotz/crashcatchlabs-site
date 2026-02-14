@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 # CrashCatch Labs Website
 
 This repository contains the marketing site for:
