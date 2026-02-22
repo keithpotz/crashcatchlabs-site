@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security — CrashCatch</title>
+  <meta name="description" content="CrashCatch security disclosure policy. How to responsibly report vulnerabilities.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="mailto:hello@crashcatchlabs.com" class="btn btn-sm">Join Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Security</div>
+        <h1>Responsible Disclosure</h1>
+        <p>Found a security vulnerability in CrashCatch? We want to hear from you. Here's how to report it safely.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="callout">
+          To report a security vulnerability, email us directly at
+          <a href="mailto:security@crashcatchlabs.com"><strong>security@crashcatchlabs.com</strong></a>.
+          Please encrypt sensitive reports using our PGP key (see below).
+        </div>
+
+        <h2>Our Commitment</h2>
+        <p>
+          CrashCatch processes crash dumps that may contain sensitive application state. We take the security
+          of our software and the data entrusted to us seriously.
+        </p>
+        <p>
+          If you report a vulnerability to us in good faith, we commit to:
+        </p>
+        <ul>
+          <li>Acknowledge your report within <strong>48 hours</strong>.</li>
+          <li>Provide an initial assessment and estimated timeline within <strong>7 business days</strong>.</li>
+          <li>Work with you to understand and reproduce the issue.</li>
+          <li>Notify you when the vulnerability has been resolved.</li>
+          <li>Credit you in our changelog (unless you prefer to remain anonymous).</li>
+          <li>Not take legal action against researchers acting in good faith.</li>
+        </ul>
+
+        <h2>What to Include in Your Report</h2>
+        <p>A useful vulnerability report includes:</p>
+        <ol>
+          <li>A clear description of the vulnerability and its potential impact.</li>
+          <li>The affected component (desktop application, web service, API, etc.).</li>
+          <li>Step-by-step instructions to reproduce the issue.</li>
+          <li>Any proof-of-concept code, screenshots, or output demonstrating the vulnerability.</li>
+          <li>Your assessment of severity (CVSS score if possible).</li>
+          <li>Whether you would like to be credited publicly.</li>
+        </ol>
+
+        <h2>Scope</h2>
+        <p>The following are <strong>in scope</strong>:</p>
+        <ul>
+          <li>The CrashCatch web service and API at <code>crashcatchlabs.com</code></li>
+          <li>The CrashCatch desktop application (CrashCatch Analyze)</li>
+          <li>The CrashCatch Runtime client library</li>
+          <li>Authentication and authorisation mechanisms</li>
+          <li>Data handling and crash data isolation between accounts</li>
+        </ul>
+        <p>The following are <strong>out of scope</strong>:</p>
+        <ul>
+          <li>Cloudflare infrastructure (report directly to Cloudflare)</li>
+          <li>Mailchimp / third-party services we use</li>
+          <li>Social engineering or phishing attacks against CrashCatch Labs staff</li>
+          <li>Denial-of-service attacks</li>
+          <li>Issues in third-party dependencies that have already been publicly disclosed</li>
+        </ul>
+
+        <h2>Coordinated Disclosure</h2>
+        <p>
+          We follow a coordinated disclosure model. We ask that you give us a reasonable amount of time
+          — typically <strong>90 days</strong> — to investigate and remediate a vulnerability before
+          publishing any details publicly.
+        </p>
+        <p>
+          If you believe a vulnerability is being actively exploited in the wild, please note this clearly
+          in your report and we will treat it as a priority.
+        </p>
+
+        <h2>PGP Key</h2>
+        <p>
+          For sensitive reports, please encrypt your email to
+          <a href="mailto:security@crashcatchlabs.com">security@crashcatchlabs.com</a>.
+          Our PGP key will be published here once the product enters public beta.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Security reports: <a href="mailto:security@crashcatchlabs.com">security@crashcatchlabs.com</a><br>
+          General contact: <a href="mailto:hello@crashcatchlabs.com">hello@crashcatchlabs.com</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — CrashCatch</title>
+  <meta name="description" content="CrashCatch Labs is building Windows-first crash intelligence for C++ and Unreal Engine developers.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="mailto:hello@crashcatchlabs.com" class="btn btn-sm">Join Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">About</div>
+        <h1>Built for the developer<br>staring at a hex dump at 2am.</h1>
+        <p>CrashCatch exists because C++ crash analysis on Windows has always been harder than it should be.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <h2>The Problem</h2>
+        <p>
+          When a C++ application crashes on Windows, you get a minidump. To get anything useful out of it, you need
+          WinDbg, the right PDB files on the right symbol path, knowledge of DbgHelp internals, and a good chunk of time.
+          Even then, you get raw data — a stack trace, register state, exception code — and you're left to figure out
+          what it all means.
+        </p>
+        <p>
+          For Unreal Engine developers it's even worse. The crash folder contains multiple files, the stack is full of
+          engine frames that obscure the game-code root cause, and the UObject lifecycle adds another layer of complexity
+          that generic tools know nothing about.
+        </p>
+        <p>
+          Experienced engineers can navigate this. Junior developers and solo indie devs often can't. And even experienced
+          engineers waste time on the mechanical work when they should be fixing bugs.
+        </p>
+
+        <h2>What We're Building</h2>
+        <p>
+          CrashCatch is a Windows-first crash intelligence tool. It takes minidump files and crash folders, symbolicates
+          them using DbgHelp and the DIA SDK, and then goes further — it identifies the likely root cause, explains what
+          happened in plain language, and tells you where to look.
+        </p>
+        <p>
+          <strong>Explain Mode</strong> is the core differentiator. Instead of surfacing a symbolicated stack and leaving
+          you to reason about it, CrashCatch reads the evidence — the exception code, faulting address, register state,
+          and frame context — and produces a structured explanation.
+        </p>
+        <p>
+          <strong>Engineer Mode</strong> is for senior developers who want the full picture. Every thread, every register,
+          every loaded module, full JSON export. Nothing is hidden or abstracted away.
+        </p>
+
+        <h2>Our Principles</h2>
+      </div>
+
+      <div class="about-values">
+        <div class="about-value">
+          <h4>Windows-first</h4>
+          <p>We build around Windows crash tooling properly — DbgHelp, DIA SDK, PDB, minidumps — not as an afterthought.</p>
+        </div>
+        <div class="about-value">
+          <h4>Offline-first</h4>
+          <p>The local tool works entirely offline. No crash data leaves your machine unless you explicitly choose cloud features.</p>
+        </div>
+        <div class="about-value">
+          <h4>Open-core</h4>
+          <p>CrashCatch Runtime (the crash capture library) is Apache 2.0. The analysis and dashboard are the commercial product.</p>
+        </div>
+        <div class="about-value">
+          <h4>No telemetry</h4>
+          <p>We don't run background processes, phone home, or collect usage data on the local tool. Ever.</p>
+        </div>
+        <div class="about-value">
+          <h4>No lock-in</h4>
+          <p>All your crash data is exportable as JSON. The desktop tool works without a subscription. Cloud enhances, never gatekeeps.</p>
+        </div>
+        <div class="about-value">
+          <h4>Developer-first</h4>
+          <p>Designed for C++ engineers, not product managers. Dense, accurate, and technically complete.</p>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h2>Open-Core Model</h2>
+        <p>
+          CrashCatch is structured as two components:
+        </p>
+        <ul>
+          <li>
+            <strong>CrashCatch Runtime</strong> — The crash capture library. Registers the unhandled exception filter,
+            writes minidumps, and handles offline queuing. Licensed under Apache 2.0. Integrate it into your game or
+            application for free.
+          </li>
+          <li>
+            <strong>CrashCatch Analyze</strong> — The analysis engine, Explain Mode, Engineer Mode, cloud dashboard,
+            and team features. This is the commercial product.
+          </li>
+        </ul>
+
+        <h2>Current Status</h2>
+        <p>
+          CrashCatch is in active development. The core analysis engine is built and working. We're currently building
+          the desktop UI, the cloud upload pipeline, and the team dashboard.
+        </p>
+        <p>
+          If you want to be notified when we launch the beta, join the mailing list. No spam — just a single email
+          when early access opens.
+        </p>
+        <div class="callout">
+          Questions, partnership inquiries, or just want to talk C++ crash analysis?
+          Reach us at <a href="mailto:hello@crashcatchlabs.com">hello@crashcatchlabs.com</a>
+        </div>
+
+        <h2>Contact</h2>
+        <ul>
+          <li>General: <a href="mailto:hello@crashcatchlabs.com">hello@crashcatchlabs.com</a></li>
+          <li>Support: <a href="mailto:support@crashcatchlabs.com">support@crashcatchlabs.com</a></li>
+          <li>Security: <a href="mailto:security@crashcatchlabs.com">security@crashcatchlabs.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

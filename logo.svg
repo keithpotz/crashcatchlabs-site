@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 76" width="268" height="76" role="img" aria-label="CrashCatch">
+  <title>CrashCatch</title>
+  <defs>
+
+    <!-- Shield body gradient: dark charcoal-navy -->
+    <linearGradient id="shieldFill" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%"   stop-color="#243354"/>
+      <stop offset="100%" stop-color="#111926"/>
+    </linearGradient>
+
+    <!-- Shield bevel/rim: steel-blue highlight fading to deep navy -->
+    <linearGradient id="shieldRim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#5a9fd4"/>
+      <stop offset="45%"  stop-color="#2a5a9a"/>
+      <stop offset="100%" stop-color="#162444"/>
+    </linearGradient>
+
+    <!-- Inner V mark: light-sky to vivid blue -->
+    <linearGradient id="vGrad" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%"   stop-color="#a8d8ff"/>
+      <stop offset="100%" stop-color="#4a9eff"/>
+    </linearGradient>
+
+  </defs>
+
+  <!-- ── Shield ── -->
+
+  <!-- Outer shape — provides the rim/bevel colour -->
+  <path d="
+    M 11 5
+    Q 31 2 51 5
+    Q 59 7 59 14
+    L 59 38
+    Q 56 59 31 72
+    Q 6 59 3 38
+    L 3 14
+    Q 3 7 11 5 Z"
+    fill="url(#shieldRim)"/>
+
+  <!-- Inner shape — slightly inset, darker fill -->
+  <path d="
+    M 12 9
+    Q 31 6 50 9
+    Q 56 11 56 17
+    L 56 38
+    Q 53 56 31 67
+    Q 9 56 6 38
+    L 6 17
+    Q 6 11 12 9 Z"
+    fill="url(#shieldFill)"/>
+
+  <!-- Inner V / checkmark mark -->
+  <path d="M 17 21 L 31 52 L 45 21"
+    fill="none"
+    stroke="url(#vGrad)"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- ── Wordmark ── -->
+  <text
+    x="72" y="49"
+    font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="-0.3">
+    <tspan fill="#ddeaff">Crash</tspan><tspan fill="#3b9dff">Catch</tspan>
+  </text>
+
+</svg>

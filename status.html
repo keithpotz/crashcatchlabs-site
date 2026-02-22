@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status — CrashCatch</title>
+  <meta name="description" content="CrashCatch service status. Pre-launch infrastructure status page.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="mailto:hello@crashcatchlabs.com" class="btn btn-sm">Join Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Status</div>
+        <h1>Service Status</h1>
+        <p>Current operational status of CrashCatch infrastructure.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+
+      <div class="prose">
+        <div class="callout">
+          CrashCatch is pre-launch. Cloud services are not yet publicly available. The status below
+          reflects the infrastructure being built ahead of beta.
+        </div>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-row">
+          <span>Marketing site (crashcatchlabs.com)</span>
+          <span class="status-pill status-pill-ok">
+            <span class="status-dot"></span>Operational
+          </span>
+        </div>
+        <div class="status-row">
+          <span>Crash Upload API</span>
+          <span class="status-pill status-pill-pending">
+            <span class="status-dot"></span>Pre-launch
+          </span>
+        </div>
+        <div class="status-row">
+          <span>Analysis Worker</span>
+          <span class="status-pill status-pill-pending">
+            <span class="status-dot"></span>Pre-launch
+          </span>
+        </div>
+        <div class="status-row">
+          <span>Team Dashboard</span>
+          <span class="status-pill status-pill-pending">
+            <span class="status-dot"></span>Pre-launch
+          </span>
+        </div>
+        <div class="status-row">
+          <span>Symbol Upload Service</span>
+          <span class="status-pill status-pill-pending">
+            <span class="status-dot"></span>Pre-launch
+          </span>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h2>Incidents</h2>
+        <p>No incidents reported.</p>
+
+        <h2>Subscribe to Updates</h2>
+        <p>
+          Sign up to the mailing list to be notified when cloud services launch and to receive
+          incident notifications after launch.
+        </p>
+      </div>
+
+      <!-- !! MAILCHIMP: Replace the action URL below with your Mailchimp embed form action URL. !! -->
+      <form
+        action="https://YOUR-ACCOUNT.us1.list-manage.com/subscribe/post?u=XXXX&amp;id=XXXX"
+        method="post"
+        target="_blank"
+        novalidate
+        style="margin-top:8px">
+        <div class="mc-form" style="margin:0; max-width:420px">
+          <input type="email" name="EMAIL" placeholder="you@studio.com" required autocomplete="email">
+          <div style="position:absolute;left:-5000px" aria-hidden="true">
+            <input type="text" name="b_XXXX_XXXX" tabindex="-1" value="">
+          </div>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </div>
+        <p class="mc-form-note" style="text-align:left; margin-top:8px">No spam. Launch + incident updates only.</p>
+      </form>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
