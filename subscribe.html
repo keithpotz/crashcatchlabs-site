@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Waitlist — CrashCatch</title>
+  <meta name="description" content="Sign up for early access to CrashCatch — Windows-first crash intelligence for C++ and Unreal Engine developers.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ── Page-specific styles ── */
+
+    .subscribe-page {
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glow reuse from hero */
+    .subscribe-glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse at center,
+        rgba(59, 157, 255, 0.10) 0%,
+        transparent 70%);
+      pointer-events: none;
+    }
+
+    .subscribe-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* Badge */
+    .subscribe-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .subscribe-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s ease infinite;
+    }
+
+    /* Heading */
+    .subscribe-inner h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .subscribe-inner h1 span {
+      color: var(--accent);
+    }
+
+    .subscribe-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    /* Card */
+    .subscribe-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Top accent line on card */
+    .subscribe-card::before {
+      content: none;
+    }
+
+    .subscribe-card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subscribe-card-title::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* Form fields */
+    .subscribe-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .field input[type="text"],
+    .field input[type="email"] {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 157, 255, 0.1);
+    }
+
+    .field input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Submit */
+    .subscribe-submit {
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .subscribe-submit:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 20px rgba(59, 157, 255, 0.35);
+    }
+
+    .subscribe-submit:active {
+      transform: scale(0.99);
+    }
+
+    /* Note */
+    .subscribe-note {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .subscribe-note a {
+      color: var(--text-dim);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .subscribe-note a:hover { color: var(--text-muted); }
+
+    /* Divider */
+    .subscribe-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* What you'll get */
+    .subscribe-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .subscribe-perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .subscribe-perk-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--accent);
+    }
+
+    /* Honeypot */
+    .mc-bot-field {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    /* Success state */
+    .subscribe-success {
+      display: none;
+      text-align: center;
+      padding: 16px 0 8px;
+    }
+
+    .subscribe-success-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(63, 185, 80, 0.1);
+      border: 1px solid rgba(63, 185, 80, 0.25);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .subscribe-success h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .subscribe-success p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Error message */
+    .subscribe-error {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.25);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: var(--red);
+      text-align: center;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @media (max-width: 500px) {
+      .subscribe-card { padding: 24px 20px; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation (matches index.html exactly) ── -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="subscribe.html" class="btn btn-sm">Join Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Subscribe Page ── -->
+  <div class="subscribe-page">
+    <div class="subscribe-glow" aria-hidden="true"></div>
+
+    <div class="subscribe-inner">
+
+      <div class="subscribe-badge">
+        <span class="subscribe-badge-dot" aria-hidden="true"></span>
+        Early Access · In Development
+      </div>
+
+      <h1>Get <span>early access</span><br>to CrashCatch.</h1>
+      <p class="subscribe-sub">
+        Be the first to know when CrashCatch opens for beta. No spam — just
+        the signal that matters.
+      </p>
+
+      <div class="subscribe-card">
+
+        <div class="subscribe-card-title">Join the waitlist</div>
+
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  MAILCHIMP SETUP                                          ║
+        ║                                                           ║
+        ║  Replace the action URL:                                  ║
+        ║  Mailchimp → Audience → Signup forms → Embedded forms     ║
+        ║  Copy the action="..." value and paste below              ║
+        ║                                                           ║
+        ║  Also update the honeypot input name (b_XXXX_YYYY)        ║
+        ║  with the value from your Mailchimp embed code            ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <form
+          id="mc-embedded-subscribe-form"
+          name="mc-embedded-subscribe-form"
+          action="https://crashcatchlabs.us3.list-manage.com/subscribe/post?u=a8502af867e4ac80271201184&amp;id=5054f97a72&amp;v_id=5182&amp;f_id=00013be2f0"
+          method="post"
+          target="_blank"
+          novalidate
+        >
+          <div class="subscribe-fields">
+
+            <div class="field-row">
+              <div class="field">
+                <label for="mce-FNAME">First name</label>
+                <input
+                  type="text"
+                  name="FNAME"
+                  id="mce-FNAME"
+                  placeholder="Keith"
+                  autocomplete="given-name"
+                />
+              </div>
+              <div class="field">
+                <label for="mce-LNAME">Last name</label>
+                <input
+                  type="text"
+                  name="LNAME"
+                  id="mce-LNAME"
+                  placeholder="Pottratz"
+                  autocomplete="family-name"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="mce-EMAIL">Email address *</label>
+              <input
+                type="email"
+                name="EMAIL"
+                id="mce-EMAIL"
+                placeholder="you@example.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+          </div>
+
+          <!-- Honeypot – do NOT remove -->
+          <div class="mc-bot-field" aria-hidden="true">
+            <input type="text" name="b_a8502af867e4ac80271201184_5054f97a72" tabindex="-1" value="" />
+          </div>
+
+          <button type="submit" id="mc-embedded-subscribe" name="subscribe" class="subscribe-submit">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 2h12v1.5L8 9 2 3.5V2zm0 3l6 5 6-5V14H2V5z" fill="currentColor"/>
+            </svg>
+            Join the Waitlist
+          </button>
+
+          <div class="subscribe-error" id="subscribe-error" role="alert"></div>
+
+          <p class="subscribe-note">
+            No spam. Unsubscribe any time. &nbsp;·&nbsp;
+            <a href="privacy.html">Privacy Policy</a>
+          </p>
+
+        </form>
+
+        <!-- Success state (shown after submit) -->
+        <div class="subscribe-success" id="subscribe-success" role="status">
+          <div class="subscribe-success-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <path d="M5 11L9 15L17 7" stroke="#3fb950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>You're on the list.</h3>
+          <p>We'll reach out as soon as early access opens.<br>Keep an eye on your inbox.</p>
+        </div>
+
+        <div class="subscribe-divider"></div>
+
+        <!-- What you'll get -->
+        <div class="subscribe-perks">
+          <div class="subscribe-perk">
+            <svg class="subscribe-perk-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M3 7.5L6.5 11L12 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>First access when beta opens</span>
+          </div>
+          <div class="subscribe-perk">
+            <svg class="subscribe-perk-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M3 7.5L6.5 11L12 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Development updates &amp; changelog highlights</span>
+          </div>
+          <div class="subscribe-perk">
+            <svg class="subscribe-perk-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M3 7.5L6.5 11L12 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Exclusive launch pricing for waitlist members</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer (matches index.html exactly) ── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="/cdn-cgi/l/email-protection#4d3e383d3d223f390d2e3f2c3e252e2c392e25212c2f3e632e2220">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // After Mailchimp redirects back (or opens in _blank), show success state
+    // This detects if the user came back from a successful Mailchimp submission
+    // via the URL hash that Mailchimp appends on success.
+    (function () {
+      const form = document.getElementById('mc-embedded-subscribe-form');
+      const success = document.getElementById('subscribe-success');
+      const errorEl = document.getElementById('subscribe-error');
+
+      // Basic client-side validation before submit
+      form.addEventListener('submit', function (e) {
+        const email = document.getElementById('mce-EMAIL');
+        if (!email.value || !email.value.includes('@')) {
+          e.preventDefault();
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.style.display = 'block';
+          email.focus();
+          return;
+        }
+        errorEl.style.display = 'none';
+
+        // Show success after a short delay (form posts to _blank tab)
+        // so the user gets instant feedback on this page too
+        setTimeout(funct
