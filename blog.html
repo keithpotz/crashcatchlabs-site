@@ -185,7 +185,7 @@ Stack:
 
         <ul>
           <li>The PDB that matches the <em>exact</em> build is available</li>
-          <li>DbgHelp — the Windows symbolication API  can find it</li>
+          <li>DbgHelp  the Windows symbolication API  can find it</li>
           <li>The symbol search path is configured properly</li>
           <li>You're doing all of this on a Windows machine, because DbgHelp is a Windows-only API</li>
         </ul>
@@ -230,7 +230,7 @@ Stack:
         </p>
 
         <p>
-          Symbolication is the foundation. CrashCatch uses DbgHelp and the DIA SDK natively — the
+          Symbolication is the foundation. CrashCatch uses DbgHelp and the DIA SDK natively  the
           same APIs that WinDbg uses  to fully resolve every frame to file name and line number.
           Engine frames get dimmed. Your game code stands out. PDB match status is shown per-frame
           so you know exactly which frames resolved and why others didn't.
