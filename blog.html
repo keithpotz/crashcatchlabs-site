@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why C++ Crash Dumps Are Still Unreadable — CrashCatch Blog</title>
+  <meta name="description" content="When a Windows game crashes, you get a .dmp file. The raw output is nearly useless. Here's why symbolication is hard, why most tools don't solve it, and what we're building.">
+  <meta property="og:title" content="Why C++ Crash Dumps Are Still Unreadable — CrashCatch Blog">
+  <meta property="og:description" content="When a Windows game crashes, you get a .dmp file. The raw output is nearly useless. Here's why symbolication is hard, why most tools don't solve it, and what we're building.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .post-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .post-cta {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .post-cta-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .post-cta-text p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .post-meta { gap: 10px; }
+      .post-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="subscribe.html" class="btn btn-sm">Join Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">CrashCatch Labs Blog</div>
+        <h1>Why C++ Crash Dumps Are Still Unreadable</h1>
+        <p>When a Windows game crashes, you get a .dmp file. The raw output is nearly useless. Here's why symbolication is hard, why most tools don't solve it, and what we're building to fix it.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="post-meta">
+          <span>February 26, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+          <span>·</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Unreal Engine</span>
+          <span class="post-tag">Windows</span>
+        </div>
+
+        <p>
+          When a Windows game or native C++ application crashes on a user's machine, the operating
+          system writes a <code>.dmp</code> file  a snapshot of the process at the moment of death.
+          In theory, this file contains everything you need to diagnose the crash: the exception code,
+          the faulting address, every thread's stack, the CPU registers, and a list of every loaded module.
+        </p>
+
+        <p>
+          In practice, here's what most developers actually see.
+        </p>
+
+        <h2>What the raw output looks like</h2>
+
+        <p>
+          Open a crash dump in Windows Event Viewer and you get something like this:
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Windows Event Viewer</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-red">Exception: 0xC0000005</span>
+
+Access violation reading
+location 0x00000000
+
+Faulting module:
+  UE4Editor-MyGame.dll
+
+Offset: 0x00012A34
+
+Stack:
+  ntdll.dll
+  kernelbase.dll
+  UE4Editor-MyGame.dll
+  ...</code></pre>
+          </div>
+        </div>
+
+        <p>
+          This is nearly useless. You can see that something crashed somewhere in your game DLL,
+          but you have no file name, no line number, no function name  just a hex offset into a
+          binary. Opening the same file in WinDbg gets you further, but now you're manually
+          loading symbol files, running <code>.reload</code> commands, and hoping your PDB files
+          are in the right place. For a crash that happened on a player's machine — not your dev
+          box — you often don't have the right symbols loaded at all.
+        </p>
+
+        <p>
+          This is the state of crash analysis on Windows in 2026. It hasn't changed much in 20 years.
+        </p>
+
+        <h2>Why it's harder than it should be</h2>
+
+        <p>
+          The core problem is <strong>symbolication</strong>  the process of translating raw memory
+          addresses back into human-readable function names, file names, and line numbers. On Windows,
+          this depends on PDB (Program Database) files, which are generated alongside your binary by
+          MSVC at compile time.
+        </p>
+
+        <p>
+          Symbolication itself works well when everything is set up correctly. But "correctly" means:
+        </p>
+
+        <ul>
+          <li>The PDB that matches the <em>exact</em> build is available</li>
+          <li>DbgHelp — the Windows symbolication API  can find it</li>
+          <li>The symbol search path is configured properly</li>
+          <li>You're doing all of this on a Windows machine, because DbgHelp is a Windows-only API</li>
+        </ul>
+
+        <p>
+          That last point is where most crash reporting tools fall short. The majority of commercial
+          crash tools are built cross-platform and treat Windows as an afterthought. They can upload
+          <code>.dmp</code> files and display raw data, but they cannot actually symbolicate on the
+          server unless they are running Windows analysis workers  which most of them aren't.
+          The result: you get a dashboard showing you unsymbolicated hex addresses, which is barely
+          better than nothing.
+        </p>
+
+        <p>
+          The Windows symbolication stack  DbgHelp, the DIA SDK, symbol servers  is powerful but
+          genuinely complex. It requires careful handling of symbol search paths, age/GUID validation
+          between PDBs and binaries, and deep knowledge of the PE format. Getting it right takes real
+          investment. Most tools haven't made that investment for Windows specifically.
+        </p>
+
+        <h2>For Unreal Engine developers, there's an additional layer</h2>
+
+        <p>
+          Unreal Engine generates its own crash format: a folder containing the <code>.dmp</code> file,
+          a <code>CrashContext.runtime-xml</code> with metadata, and log files. The symbolicated stack
+          trace typically contains hundreds of engine frames — <code>UWorld::Tick</code>,
+          <code>FEngineLoop::Tick</code>, <code>AActor::TickActor</code> — that are almost never
+          the root cause of a game-specific crash.
+        </p>
+
+        <p>
+          Finding your actual code in that noise requires understanding which frames belong to the
+          engine, which belong to your game, and which belong to third-party plugins. Without that
+          distinction, you're manually scrolling through 200 stack frames looking for the one that
+          matters. Tools that aren't specifically built for Unreal don't make this distinction at all.
+        </p>
+
+        <h2>What CrashCatch does differently</h2>
+
+        <p>
+          We're building CrashCatch to be the tool we wished existed.
+        </p>
+
+        <p>
+          Symbolication is the foundation. CrashCatch uses DbgHelp and the DIA SDK natively — the
+          same APIs that WinDbg uses  to fully resolve every frame to file name and line number.
+          Engine frames get dimmed. Your game code stands out. PDB match status is shown per-frame
+          so you know exactly which frames resolved and why others didn't.
+        </p>
+
+        <p>
+          On top of that is <strong>Explain Mode</strong>. Instead of showing a symbolicated stack
+          and stopping there, CrashCatch reads the evidence: the exception type, the faulting address,
+          the frame that owns the fault, the register state. It produces a plain-English root cause
+          with a confidence level and a suggested fix.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">CrashCatch — Explain Mode</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-finding">Null pointer dereference detected.</span>
+
+<span class="c-label">MOST LIKELY ORIGIN</span>
+  <span class="c-func">AEnemy::Tick</span><span class="c-muted">()</span>  <span class="c-path">Enemy.cpp:214</span>
+
+<span class="c-label">EVIDENCE</span>
+  Read access at address <span class="c-red">0x0</span>
+  Stack frame ownership confirmed
+  <span class="c-code">Target</span> <span class="c-muted">== nullptr at call site</span>
+
+<span class="c-label">SUGGESTED CHECK</span>
+  Validate <span class="c-code">Target</span> pointer
+  before <span class="c-func">Tick</span><span class="c-muted">() is invoked.</span>
+
+<span class="c-conf">Confidence: HIGH</span></code></pre>
+          </div>
+        </div>
+
+        <p>
+          For power users, <strong>Engineer Mode</strong> surfaces everything: the full CPU register
+          state at the time of the fault, every thread active at crash time, every loaded module with
+          its version and PDB match status. Everything exports to JSON so you can diff crash reports
+          across builds and pipe the output wherever you need it.
+        </p>
+
+        <p>
+          It's <strong>offline-first</strong>. Crash dumps stay on your machine unless you opt in to
+          cloud upload. No mandatory connectivity, no background telemetry. The tool works on an air-gapped
+          dev machine.
+        </p>
+
+        <h2>The open-core model</h2>
+
+        <p>
+          The capture runtime  the library that integrates into your game and writes the minidump when
+          a crash occurs  will be <strong>Apache 2.0 licensed</strong>. Free to use, free to ship,
+          free to read. The analysis engine is proprietary. That's how we keep the lights on while
+          making the integration cost zero.
+        </p>
+
+        <h2>Where we are</h2>
+
+        <p>
+          CrashCatch is in active development. The desktop analyzer and the capture SDK are being built
+          now. If you're a C++ or Unreal Engine developer who has ever lost an afternoon to a raw stack
+          trace, this is for you.
+        </p>
+
+        <div class="post-cta">
+          <div class="post-cta-text">
+            <h4>Get early access when beta opens.</h4>
+            <p>Join the waitlist — no spam, one email when we're ready.</p>
+          </div>
+          <a href="subscribe.html" class="btn btn-primary">Join the Waitlist</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
