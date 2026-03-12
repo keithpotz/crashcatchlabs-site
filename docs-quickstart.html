@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quickstart — CrashCatch Docs</title>
+  <meta name="description" content="Install CrashCatch Analyze and open your first Windows crash dump in under five minutes. Step-by-step quickstart guide.">
+  <meta property="og:title" content="Quickstart — CrashCatch Docs">
+  <meta property="og:description" content="Install CrashCatch Analyze and open your first Windows crash dump in under five minutes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://crashcatchlabs.com/docs-quickstart.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/docs-quickstart.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label"><a href="docs.html" style="color:inherit;text-decoration:none;">Documentation</a> &rsaquo; Quickstart</div>
+        <h1>Quickstart</h1>
+        <p>Get up and running with CrashCatch Analyze in under five minutes.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="docs-layout">
+
+        <aside class="docs-sidebar">
+          <div class="docs-sidebar-heading">Documentation</div>
+          <ul class="docs-sidebar-nav">
+            <li><a href="docs-quickstart.html" class="active">Quickstart</a></li>
+            <li><a href="docs-ui.html">Interface Guide</a></li>
+            <li><a href="docs-explain-mode.html">Explain Mode</a></li>
+            <li><a href="docs-unreal.html">Unreal Engine</a></li>
+            <li><a href="docs-pdf-export.html">Exporting Reports</a></li>
+          </ul>
+        </aside>
+
+        <div class="docs-content">
+          <div class="prose">
+
+            <h2>Requirements</h2>
+            <ul>
+              <li>Windows 10 or Windows 11 (x64)</li>
+              <li>Internet connection required for Explain Mode — all other features work offline</li>
+            </ul>
+
+            <h2>Installation</h2>
+
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <strong>Download the installer</strong>
+                Go to the <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" target="_blank" rel="noopener noreferrer">CrashCatch Analyzer releases page</a> on GitHub and download the latest <code>CrashCatch-Analyze-x.x.x-setup.exe</code>.
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <strong>Run the installer</strong>
+                Double-click the downloaded <code>.exe</code>. Because the beta installer is currently unsigned, Windows SmartScreen may show a warning.
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <strong>Bypass SmartScreen</strong>
+                If you see "Windows protected your PC", click <strong>More info</strong>, then <strong>Run anyway</strong>. This warning appears for all unsigned Windows installers — it is expected during the beta.
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <strong>Complete the installer</strong>
+                Follow the on-screen steps. CrashCatch Analyze installs for the current user only — no administrator rights required.
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-body">
+                <strong>Launch the app</strong>
+                Open CrashCatch Analyze from the Start menu or desktop shortcut. A welcome screen will appear on first launch.
+              </div>
+            </div>
+
+            <h2>Opening your first crash dump</h2>
+            <p>You need a Windows minidump file (<code>.dmp</code>) to analyze. If you don't have one yet, you can generate one from any crashing Windows application — they are typically written to <code>%LOCALAPPDATA%\CrashDumps\</code> or your application's own crash output folder.</p>
+
+            <p>There are three ways to open a dump:</p>
+            <ul>
+              <li><strong>Drag and drop</strong> — drag a <code>.dmp</code> file directly onto the CrashCatch window</li>
+              <li><strong>File menu</strong> — go to <strong>File &gt; Open .dmp</strong></li>
+              <li><strong>Keyboard shortcut</strong> — press <kbd>Ctrl+O</kbd></li>
+            </ul>
+
+            <h2>What happens next</h2>
+            <p>As soon as a file is loaded, CrashCatch will:</p>
+            <ul>
+              <li>Parse the minidump and extract exception, thread, module, and register data</li>
+              <li>Run the <strong>Intel Engine</strong> — a heuristics pass that classifies the crash type, produces a confidence score, and flags key indicators</li>
+              <li>Display results across the tabs at the top of the window</li>
+            </ul>
+            <p>The <strong>Stack Trace</strong> tab opens by default, showing the symbolicated call stack of the crashing thread. See the <a href="docs-ui.html">Interface Guide</a> for a full breakdown of every tab.</p>
+
+            <div class="callout">
+              If your stack frames show as raw addresses with no function names, you need to configure symbol paths so CrashCatch can resolve symbols from your PDB files. Symbol path configuration is coming in a future release.
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

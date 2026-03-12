@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exporting Reports — CrashCatch Docs</title>
+  <meta name="description" content="Export crash analysis reports as PDF from CrashCatch Analyze. Share with your team, submit to engine vendors, or archive for later reference.">
+  <meta property="og:title" content="Exporting Reports — CrashCatch Docs">
+  <meta property="og:description" content="Export crash reports as PDF from CrashCatch Analyze — what's included, how to export, and common use cases.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://crashcatchlabs.com/docs-pdf-export.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/docs-pdf-export.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label"><a href="docs.html" style="color:inherit;text-decoration:none;">Documentation</a> &rsaquo; Exporting Reports</div>
+        <h1>Exporting Reports</h1>
+        <p>Share crash analysis as a self-contained PDF.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="docs-layout">
+
+        <aside class="docs-sidebar">
+          <div class="docs-sidebar-heading">Documentation</div>
+          <ul class="docs-sidebar-nav">
+            <li><a href="docs-quickstart.html">Quickstart</a></li>
+            <li><a href="docs-ui.html">Interface Guide</a></li>
+            <li><a href="docs-explain-mode.html">Explain Mode</a></li>
+            <li><a href="docs-unreal.html">Unreal Engine</a></li>
+            <li><a href="docs-pdf-export.html" class="active">Exporting Reports</a></li>
+          </ul>
+        </aside>
+
+        <div class="docs-content">
+          <div class="prose">
+
+            <h2>How to export</h2>
+            <p>With a crash dump open and analysis complete:</p>
+            <ul>
+              <li><strong>Toolbar</strong> — click the <strong>Export PDF</strong> button</li>
+              <li><strong>File menu</strong> — go to <strong>File &gt; Export PDF</strong></li>
+              <li><strong>Keyboard shortcut</strong> — press <kbd>Ctrl+P</kbd></li>
+            </ul>
+            <p>A save dialog will appear. Choose a location and filename, then click <strong>Save</strong>. The PDF is generated immediately — no upload or network request is involved.</p>
+
+            <h2>What's included in the export</h2>
+            <p>The exported PDF contains a structured crash report with the following sections:</p>
+            <ul>
+              <li><strong>Summary header</strong> — exception type, fault address, crash timestamp, and OS/processor info</li>
+              <li><strong>Intel Engine findings</strong> — crash classification, confidence score, indicators, and secondary findings</li>
+              <li><strong>Stack trace</strong> — the symbolicated call stack of the crashing thread, with function names, source files, and line numbers where available</li>
+              <li><strong>AI explanation</strong> — root cause, evidence, and suggested fix from Explain Mode, if an explanation was run before exporting</li>
+              <li><strong>Thread list</strong> — all threads with IDs and suspend counts</li>
+              <li><strong>Module list</strong> — loaded DLLs and EXEs with base addresses and versions</li>
+            </ul>
+            <p>If you opened a UE crash folder, the UE Context section (engine version, build configuration, hardware info) is also included.</p>
+
+            <h3>Getting Explain Mode into the export</h3>
+            <p>The AI explanation is only included in the PDF if Explain Mode was run before you exported. Open the <strong>Explain</strong> tab and wait for the response to appear, then export. If you haven't set up Explain Mode yet, see the <a href="docs-explain-mode.html">Explain Mode guide</a>.</p>
+
+            <h2>Common use cases</h2>
+
+            <h3>Filing a bug report</h3>
+            <p>Attach the PDF to your internal bug tracker alongside the original <code>.dmp</code> file. The structured format makes it easy for other engineers to understand the crash without needing to open CrashCatch themselves.</p>
+
+            <h3>Submitting to an engine vendor</h3>
+            <p>When reporting a crash to Epic Games or a middleware vendor, the PDF gives their support team a complete picture of the crash context — stack, modules, exception code, and your analysis — in a format they can open without any special tools.</p>
+
+            <h3>Archiving</h3>
+            <p>Export and archive reports for crashes that are fixed, so you have a record of what the crash looked like and what resolved it. This is useful for tracking regressions if a similar crash reappears later.</p>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1120,3 +1120,140 @@ code, pre {
   .about-values { grid-template-columns: 1fr; }
   .mc-form      { flex-direction: column; }
 }
+
+/* ─── Documentation pages ────────────────────────────────────── */
+.docs-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 56px;
+  align-items: start;
+  padding: 48px 0 80px;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 88px;
+}
+
+.docs-sidebar-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+
+.docs-sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.docs-sidebar-nav a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.docs-sidebar-nav a:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.docs-sidebar-nav a.active {
+  background: var(--bg-elevated);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.docs-content .prose { max-width: 100%; }
+
+.prose h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 32px 0 10px;
+}
+
+.prose .step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.prose .step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-blue);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
+}
+
+.prose .step-body { flex: 1; }
+.prose .step-body strong { display: block; margin-bottom: 4px; }
+
+/* Docs hub */
+.docs-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 8px 0 40px;
+}
+
+.docs-hub-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s;
+}
+
+.docs-hub-card:hover { border-color: var(--border-blue); }
+
+.docs-hub-card-icon { margin-bottom: 12px; }
+
+.docs-hub-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.docs-hub-card p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.docs-hub-card-link {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .docs-layout { grid-template-columns: 1fr; }
+  .docs-sidebar { position: static; margin-bottom: 8px; }
+  .docs-hub-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explain Mode — CrashCatch Docs</title>
+  <meta name="description" content="Get AI-powered plain-English crash explanations in CrashCatch Analyze. Set up your Anthropic API key and understand what Explain Mode and the Intel Engine produce.">
+  <meta property="og:title" content="Explain Mode — CrashCatch Docs">
+  <meta property="og:description" content="Set up Explain Mode in CrashCatch Analyze — Anthropic API key setup, Intel Engine, and understanding the output.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://crashcatchlabs.com/docs-explain-mode.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/docs-explain-mode.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label"><a href="docs.html" style="color:inherit;text-decoration:none;">Documentation</a> &rsaquo; Explain Mode</div>
+        <h1>Explain Mode</h1>
+        <p>AI-powered plain-English explanations of your crash dumps.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="docs-layout">
+
+        <aside class="docs-sidebar">
+          <div class="docs-sidebar-heading">Documentation</div>
+          <ul class="docs-sidebar-nav">
+            <li><a href="docs-quickstart.html">Quickstart</a></li>
+            <li><a href="docs-ui.html">Interface Guide</a></li>
+            <li><a href="docs-explain-mode.html" class="active">Explain Mode</a></li>
+            <li><a href="docs-unreal.html">Unreal Engine</a></li>
+            <li><a href="docs-pdf-export.html">Exporting Reports</a></li>
+          </ul>
+        </aside>
+
+        <div class="docs-content">
+          <div class="prose">
+
+            <h2>Intel Engine vs Explain Mode</h2>
+            <p>CrashCatch has two analysis layers that work independently of each other.</p>
+            <ul>
+              <li><strong>Intel Engine</strong> runs automatically on every crash dump. It uses heuristics — pattern matching against exception codes, stack shapes, and register values — to classify the crash and flag indicators. No internet connection or API key required.</li>
+              <li><strong>Explain Mode</strong> sends a structured summary of the crash to the Claude AI and returns a plain-English explanation. It requires an Anthropic API key and an internet connection.</li>
+            </ul>
+            <p>For most crashes, Intel will give you a fast, accurate classification. Explain Mode is most useful when you want a narrative explanation, or when working with a crash type you haven't seen before.</p>
+
+            <h2>Setting up Explain Mode</h2>
+
+            <h3>Step 1 — Get an Anthropic API key</h3>
+            <p>Explain Mode uses the Anthropic Claude API. You need your own API key.</p>
+            <ol>
+              <li>Go to <strong>console.anthropic.com</strong> and sign in or create an account</li>
+              <li>Navigate to <strong>API Keys</strong> in the left sidebar</li>
+              <li>Click <strong>Create Key</strong>, give it a name (e.g. "CrashCatch"), and copy the key</li>
+            </ol>
+            <p>Note that Anthropic API usage is billed per token. Explain Mode uses a compact model and keeps requests small — typical usage costs a fraction of a cent per analysis.</p>
+
+            <h3>Step 2 — Enter the key in CrashCatch</h3>
+            <ol>
+              <li>Open CrashCatch Analyze</li>
+              <li>Go to <strong>Tools &gt; Preferences</strong></li>
+              <li>Paste your API key into the <strong>Anthropic API Key</strong> field</li>
+              <li>Click <strong>Save</strong></li>
+            </ol>
+            <p>Your key is stored locally in the app's storage — it is never sent to CrashCatch Labs servers.</p>
+
+            <h2>Running an explanation</h2>
+            <p>With a crash dump open and an API key configured:</p>
+            <ul>
+              <li>Click the <strong>Explain</strong> tab, or</li>
+              <li>Go to <strong>View &gt; Explain Mode</strong></li>
+            </ul>
+            <p>CrashCatch will send a structured summary — exception code, crashing thread stack, Intel findings, and key register values — to Claude and display the response when it arrives. This typically takes a few seconds.</p>
+
+            <h3>Auto-explain on open</h3>
+            <p>If you want an explanation to run automatically every time you open a file, enable <strong>Auto-explain on open</strong> in <strong>Tools &gt; Preferences</strong>. This is most useful if you're working through a batch of crash dumps and want the explanation ready as soon as the file loads.</p>
+
+            <h2>Understanding the output</h2>
+            <p>Explain Mode returns three structured sections:</p>
+            <ul>
+              <li><strong>Root cause</strong> — a concise sentence identifying what caused the crash. For example: <em>"A null pointer dereference in the mesh rendering pipeline, most likely caused by accessing a component that has already been garbage collected."</em></li>
+              <li><strong>Evidence</strong> — the specific signals from the dump that support the conclusion: exception code, fault address, top stack frames, and anything unusual in the register state.</li>
+              <li><strong>Suggested fix</strong> — concrete next steps. These might include adding a null check, reviewing the call site in a specific frame, or checking for a race condition in a particular subsystem.</li>
+            </ul>
+
+            <div class="callout">
+              Explain Mode is an AI assistant, not a definitive debugger. Its output is a starting point for investigation, not a guaranteed root cause. Always verify the suggested fix against your own code before acting on it.
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

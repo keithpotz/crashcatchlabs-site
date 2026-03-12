@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documentation — CrashCatch</title>
-  <meta name="description" content="CrashCatch developer documentation — integration guides, C++ SDK reference, minidump format details, Unreal Engine crash reporter setup, and Windows API usage. Launching with beta.">
+  <meta name="description" content="CrashCatch Analyze documentation. Get started, explore the interface, set up Explain Mode, analyze Unreal Engine crashes, and export reports.">
   <meta property="og:title" content="Documentation — CrashCatch">
-  <meta property="og:description" content="CrashCatch documentation is coming with the beta. Integration guides, SDK reference, and Unreal Engine setup.">
+  <meta property="og:description" content="CrashCatch Analyze documentation — quickstart, UI guide, Explain Mode, Unreal Engine, and PDF export.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://crashcatchlabs.com/docs.html">
   <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
@@ -32,30 +32,93 @@
     </div>
   </nav>
 
-  <div class="coming-soon">
-    <div class="coming-soon-inner">
-      <div class="coming-soon-icon">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <rect x="4" y="3" width="20" height="22" rx="3" stroke="#3b9dff" stroke-width="1.6"/>
-          <path d="M9 9H19M9 13H19M9 17H15" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">v0.2.0-beta</div>
+        <h1>Documentation</h1>
+        <p>Everything you need to get started with CrashCatch Analyze.</p>
       </div>
-      <div class="section-label">Developers</div>
-      <h1>Documentation</h1>
-      <p class="coming-soon-sub">
-        Full documentation — integration guides, SDK reference, minidump format notes, and Unreal Engine
-        setup — is being written alongside the beta. Sign up to be notified when it goes live.
-      </p>
-
-      <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
-      <p class="mc-form-note" style="margin-top:12px">No spam. One email when docs launch.</p>
-
-      <p style="margin-top:32px; font-size:0.85rem; color:var(--text-dim);">
-        In the meantime, see the <a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">GitHub repository</a>
-        or email <a href="mailto:hello@crashcatchlabs.com" style="color:var(--accent)">hello@crashcatchlabs.com</a> with questions.
-      </p>
     </div>
   </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+        <h2>Guides</h2>
+      </div>
+
+      <div class="docs-hub-grid">
+
+        <a href="docs-quickstart.html" class="docs-hub-card">
+          <div class="docs-hub-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Quickstart</h3>
+          <p>Download, install, and open your first crash dump in under five minutes.</p>
+          <span class="docs-hub-card-link">Read guide &rarr;</span>
+        </a>
+
+        <a href="docs-ui.html" class="docs-hub-card">
+          <div class="docs-hub-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke="#3b9dff" stroke-width="1.6"/>
+              <path d="M3 8h18M8 8v13" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Interface Guide</h3>
+          <p>A walkthrough of every tab and panel — Stack Trace, Threads, Modules, Intel, and more.</p>
+          <span class="docs-hub-card-link">Read guide &rarr;</span>
+        </a>
+
+        <a href="docs-explain-mode.html" class="docs-hub-card">
+          <div class="docs-hub-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="#3b9dff" stroke-width="1.6"/>
+              <path d="M12 8v4M12 16v.5" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Explain Mode</h3>
+          <p>Get AI-powered plain-English explanations of crashes. Includes Intel Engine and API key setup.</p>
+          <span class="docs-hub-card-link">Read guide &rarr;</span>
+        </a>
+
+        <a href="docs-unreal.html" class="docs-hub-card">
+          <div class="docs-hub-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <polygon points="12,2 22,20 2,20" stroke="#3b9dff" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M12 10v4M12 16.5v.5" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Unreal Engine</h3>
+          <p>Analyze UE crash folders with full CrashContext metadata, engine version, and UE-specific heuristics.</p>
+          <span class="docs-hub-card-link">Read guide &rarr;</span>
+        </a>
+
+        <a href="docs-pdf-export.html" class="docs-hub-card">
+          <div class="docs-hub-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="2" width="12" height="16" rx="2" stroke="#3b9dff" stroke-width="1.6"/>
+              <path d="M8 6h8M8 10h8M8 14h5" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M14 18v4l2-2 2 2v-4" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Exporting Reports</h3>
+          <p>Export a full crash report as PDF to share with your team or submit to engine vendors.</p>
+          <span class="docs-hub-card-link">Read guide &rarr;</span>
+        </a>
+
+      </div>
+
+      <div class="prose">
+        <div class="callout">
+          Questions not covered here? Email <a href="mailto:support@crashcatchlabs.com">support@crashcatchlabs.com</a> and we'll get back to you.
+        </div>
+      </div>
+    </div>
+  </main>
 
   <footer class="footer">
     <div class="container footer-inner">

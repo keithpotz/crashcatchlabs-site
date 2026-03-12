@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interface Guide — CrashCatch Docs</title>
+  <meta name="description" content="A complete walkthrough of the CrashCatch Analyze interface — every tab, panel, and toolbar button explained.">
+  <meta property="og:title" content="Interface Guide — CrashCatch Docs">
+  <meta property="og:description" content="Every tab and panel in CrashCatch Analyze explained — Stack Trace, Threads, Modules, Intel, Explain Mode, and more.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://crashcatchlabs.com/docs-ui.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/docs-ui.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label"><a href="docs.html" style="color:inherit;text-decoration:none;">Documentation</a> &rsaquo; Interface Guide</div>
+        <h1>Interface Guide</h1>
+        <p>Every tab and panel in CrashCatch Analyze, explained.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="docs-layout">
+
+        <aside class="docs-sidebar">
+          <div class="docs-sidebar-heading">Documentation</div>
+          <ul class="docs-sidebar-nav">
+            <li><a href="docs-quickstart.html">Quickstart</a></li>
+            <li><a href="docs-ui.html" class="active">Interface Guide</a></li>
+            <li><a href="docs-explain-mode.html">Explain Mode</a></li>
+            <li><a href="docs-unreal.html">Unreal Engine</a></li>
+            <li><a href="docs-pdf-export.html">Exporting Reports</a></li>
+          </ul>
+        </aside>
+
+        <div class="docs-content">
+          <div class="prose">
+
+            <h2>Overview</h2>
+            <p>The CrashCatch Analyze window is divided into three main areas: the toolbar at the top, the tab bar below it, and the content panel that fills the rest of the window. When no file is open, the content panel shows a drag-and-drop zone.</p>
+
+            <h2>Toolbar</h2>
+            <p>The toolbar provides quick access to common actions:</p>
+            <ul>
+              <li><strong>Open .dmp</strong> — open a Windows minidump file (<code>Ctrl+O</code>)</li>
+              <li><strong>Open UE Folder</strong> — open an Unreal Engine crash folder (<code>Ctrl+Shift+O</code>)</li>
+              <li><strong>Re-analyze</strong> — re-run analysis on the current file, useful after changing symbol paths</li>
+              <li><strong>Symbol Paths</strong> — open the symbol path configuration dialog</li>
+              <li><strong>Export PDF</strong> — export the current report as a PDF (<code>Ctrl+P</code>)</li>
+              <li><strong>Clear</strong> — close the current file and return to the drop zone</li>
+            </ul>
+            <p>If an update is available, an <strong>Update Available</strong> badge appears in the toolbar. Click it to install.</p>
+
+            <h2>Tabs</h2>
+
+            <h3>Stack Trace</h3>
+            <p>The default tab. Shows the symbolicated call stack of the crashing thread, with one row per frame. Each row includes the frame index, function name, source file, and line number (when PDB symbols are available). Frames from system DLLs can be dimmed via <strong>Preferences</strong> to help focus on your own code.</p>
+
+            <h3>Threads</h3>
+            <p>Lists every thread that was running at the time of the crash, including the thread ID and suspend count. The crashing thread is highlighted. Select a thread to view its stack trace in the panel below.</p>
+
+            <h3>Modules</h3>
+            <p>Lists every DLL and EXE loaded into the process at crash time — base address, size, version, and the path to the associated PDB file if one was found. Unreal Engine modules are flagged with their module type (Engine, Game, Plugin).</p>
+
+            <h3>Exception</h3>
+            <p>Shows the decoded exception record:</p>
+            <ul>
+              <li><strong>Exception code</strong> — the raw NTSTATUS code (e.g. <code>0xC0000005</code>) and its human-readable name (e.g. <code>ACCESS_VIOLATION</code>)</li>
+              <li><strong>Fault address</strong> — the instruction address where the exception occurred</li>
+              <li><strong>Access type</strong> — for access violations, whether the fault was a read or write</li>
+              <li><strong>Target address</strong> — for access violations, the memory address that was accessed (a null target address strongly suggests a null pointer dereference)</li>
+            </ul>
+
+            <h3>Registers</h3>
+            <p>Displays the full x64 register state of the crashing thread at the moment of the crash: <code>RAX</code>, <code>RBX</code>, <code>RCX</code>, <code>RDX</code>, <code>RSI</code>, <code>RDI</code>, <code>RBP</code>, <code>RSP</code>, <code>R8</code>–<code>R15</code>, <code>RIP</code>, and <code>EFLAGS</code>. All values are shown in hexadecimal.</p>
+
+            <h3>System</h3>
+            <p>Shows the system information captured in the minidump: OS version and build number, processor architecture, and logical processor count.</p>
+
+            <h3>Intel</h3>
+            <p>The CrashCatch Intel Engine runs a heuristic analysis pass over the crash data and produces a structured finding. This does not require an internet connection or API key.</p>
+            <ul>
+              <li><strong>Classification</strong> — the likely crash category: null pointer dereference, stack corruption, heap misuse, race condition, etc.</li>
+              <li><strong>Confidence</strong> — how strongly the evidence supports the classification, expressed as a percentage</li>
+              <li><strong>Summary</strong> — a concise description of what the analysis found</li>
+              <li><strong>Indicators</strong> — the specific pieces of evidence that led to the classification</li>
+              <li><strong>Secondary findings</strong> — additional patterns that may be relevant</li>
+            </ul>
+            <p>For Unreal Engine crashes, Intel also includes UE-specific hints based on engine module patterns and UE exception codes.</p>
+
+            <h3>Explain Mode</h3>
+            <p>Uses the Claude AI to produce a plain-English explanation of the crash. Requires an Anthropic API key and an internet connection. See the <a href="docs-explain-mode.html">Explain Mode guide</a> for setup instructions.</p>
+            <p>The output includes:</p>
+            <ul>
+              <li><strong>Root cause</strong> — a one-sentence summary of what caused the crash</li>
+              <li><strong>Evidence</strong> — the specific signals from the dump that support the conclusion</li>
+              <li><strong>Suggested fix</strong> — concrete steps to investigate and resolve the issue</li>
+            </ul>
+
+            <h3>Raw JSON</h3>
+            <p>The complete parsed crash report as a JSON object. Useful if you want to process crash data programmatically, pipe it into another tool, or just inspect the raw output. The full schema is documented on the <a href="api.html">API Reference</a> page.</p>
+
+            <h2>Preferences</h2>
+            <p>Open via <strong>Tools &gt; Preferences</strong>. Available settings:</p>
+            <ul>
+              <li><strong>Auto-explain on open</strong> — automatically run Explain Mode whenever a file is loaded (requires API key)</li>
+              <li><strong>Show system frames</strong> — include Windows system DLL frames in the stack trace</li>
+              <li><strong>Dim engine frames</strong> — visually de-emphasize engine and runtime frames so your code stands out</li>
+            </ul>
+
+            <h2>Recent files</h2>
+            <p>The last several files you opened are listed under <strong>File &gt; Open Recent</strong> for quick access.</p>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
