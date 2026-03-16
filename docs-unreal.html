@@ -65,10 +65,10 @@
             <p>When Unreal Engine crashes, it writes a crash folder — not just a single <code>.dmp</code> file. A typical UE crash folder contains:</p>
             <ul>
               <li><code>UE4Minidump.dmp</code> or <code>UE5Minidump.dmp</code> — the Windows minidump</li>
-              <li><code>CrashContext.runtime-xml</code> — engine metadata captured at the time of the crash</li>
+              <li><code>CrashContext.runtime-xml</code> engine metadata captured at the time of the crash</li>
               <li>Log files and other diagnostics</li>
             </ul>
-            <p>You can open a plain <code>.dmp</code> from a UE project using the standard <strong>Open .dmp</strong> workflow and get a symbolicated stack trace. But to get the full UE context — engine version, build configuration, hardware info, and UE-specific Intel heuristics — use <strong>Open UE Folder</strong> instead.</p>
+            <p>You can open a plain <code>.dmp</code> from a UE project using the standard <strong>Open .dmp</strong> workflow and get a symbolicated stack trace. But to get the full UE context engine version, build configuration, hardware info, and UE-specific Intel heuristics use <strong>Open UE Folder</strong> instead.</p>
 
             <h2>Finding the crash folder</h2>
             <p>UE crash folders are typically written to one of these locations depending on your project setup:</p>
@@ -82,9 +82,9 @@
             <h2>Opening a UE crash folder</h2>
             <p>There are two ways to open a UE crash folder:</p>
             <ul>
-              <li><strong>File menu</strong> — go to <strong>File &gt; Open UE Folder</strong></li>
-              <li><strong>Keyboard shortcut</strong> — press <kbd>Ctrl+Shift+O</kbd></li>
-              <li><strong>Toolbar</strong> — click the <strong>Open UE Folder</strong> button</li>
+              <li><strong>File menu</strong> go to <strong>File &gt; Open UE Folder</strong></li>
+              <li><strong>Keyboard shortcut</strong> press <kbd>Ctrl+Shift+O</kbd></li>
+              <li><strong>Toolbar</strong> click the <strong>Open UE Folder</strong> button</li>
             </ul>
             <p>Select the crash folder (not the <code>.dmp</code> file itself). CrashCatch will locate the minidump and <code>CrashContext.runtime-xml</code> automatically.</p>
 
@@ -92,12 +92,12 @@
             <p>When a UE folder is opened, a <strong>UE Context</strong> tab appears alongside the standard tabs. It displays the metadata extracted from <code>CrashContext.runtime-xml</code>:</p>
             <ul>
               <li><strong>Game name</strong> and <strong>engine version</strong> (e.g. <code>5.3.2</code>)</li>
-              <li><strong>Build configuration</strong> — Development, Shipping, DebugGame, etc.</li>
-              <li><strong>Engine mode</strong> — Editor, Shipping, Server, etc.</li>
-              <li><strong>Crash type</strong> — whether the crash was a fatal error, an ensure failure, or a stall</li>
-              <li><strong>Hardware</strong> — CPU brand, GPU brand, logical core count, total RAM</li>
-              <li><strong>Out of memory flag</strong> — whether the crash was preceded by an OOM condition</li>
-              <li><strong>UE call stack</strong> — the engine's own call stack string from the XML, independent of the minidump stack walk</li>
+              <li><strong>Build configuration</strong> Development, Shipping, DebugGame, etc.</li>
+              <li><strong>Engine mode</strong> Editor, Shipping, Server, etc.</li>
+              <li><strong>Crash type</strong> whether the crash was a fatal error, an ensure failure, or a stall</li>
+              <li><strong>Hardware</strong> CPU brand, GPU brand, logical core count, total RAM</li>
+              <li><strong>Out of memory flag</strong> whether the crash was preceded by an OOM condition</li>
+              <li><strong>UE call stack</strong> the engine's own call stack string from the XML, independent of the minidump stack walk</li>
             </ul>
 
             <h2>UE-specific Intel heuristics</h2>

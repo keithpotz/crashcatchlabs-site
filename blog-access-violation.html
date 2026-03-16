@@ -167,7 +167,7 @@
 
         <p>
           If you've worked with C++ on Windows for any length of time, you've seen
-          <code>0xC0000005</code>. It's <code>STATUS_ACCESS_VIOLATION</code> — the NTSTATUS code
+          <code>0xC0000005</code>. It's <code>STATUS_ACCESS_VIOLATION</code> the NTSTATUS code
           Windows raises when a program attempts to access a memory address it doesn't have
           permission to read or write. It is by far the most common exception code in crash dumps.
         </p>
@@ -193,8 +193,8 @@
         </ul>
 
         <p>
-          Write violations to addresses in your own heap — particularly to addresses that look
-          suspiciously like valid heap addresses — are worth treating as potential heap corruption.
+          Write violations to addresses in your own heap particularly to addresses that look
+          suspiciously like valid heap addresses are worth treating as potential heap corruption.
           Read violations at <code>0x0</code> or small non-zero offsets are almost always null
           pointer dereferences.
         </p>
@@ -210,7 +210,7 @@
         <h3>Target address: 0x0000000000000000</h3>
         <p>
           Classic null pointer dereference. The code attempted to dereference a pointer that was
-          null. Look at the faulting instruction and the frame that owns it — you're looking for a
+          null. Look at the faulting instruction and the frame that owns it you're looking for a
           pointer that wasn't initialized or wasn't checked before use.
         </p>
 
@@ -243,8 +243,8 @@ Target address:    <span class="c-red">0x0000000000000018</span>
 
         <h3>Target address: looks like a valid heap address but isn't</h3>
         <p>
-          This pattern — a non-null address in the range of your heap that causes an access
-          violation — is the signature of a <strong>use-after-free</strong> or dangling pointer.
+          This pattern a non-null address in the range of your heap that causes an access
+          violation is the signature of a <strong>use-after-free</strong> or dangling pointer.
           The object was valid at some point, but the memory has since been freed and possibly
           reallocated. Accesses to it may succeed silently (if the memory was reallocated with
           compatible data) or crash with an access violation (if the page was decommitted).
@@ -268,7 +268,7 @@ Target address:    <span class="c-red">0x0000000000000018</span>
 
         <h3>Target address: large, random-looking value</h3>
         <p>
-          A target address that looks like an arbitrary large number — nothing recognizable — usually
+          A target address that looks like an arbitrary large number nothing recognizable — usually
           means a corrupted pointer. The pointer variable itself has been overwritten with garbage,
           either by a buffer overflow in a nearby variable, a race condition writing to the pointer
           location, or a stack corruption propagating from a previous function.
@@ -285,7 +285,7 @@ Target address:    <span class="c-red">0x0000000000000018</span>
         </p>
 
         <p>
-          Look at <code>RAX</code> specifically — on x64, <code>RAX</code> is the most commonly
+          Look at <code>RAX</code> specifically on x64, <code>RAX</code> is the most commonly
           used accumulator and is often the register that holds the pointer being dereferenced.
           If <code>RAX</code> is <code>0x0</code> and the faulting instruction is
           <code>mov rcx, [rax+18h]</code>, that's a null pointer at <code>rax</code>. If
@@ -301,10 +301,10 @@ Target address:    <span class="c-red">0x0000000000000018</span>
         </p>
 
         <ul>
-          <li><strong>Null pointer dereference</strong> — the fault frame is typically deep inside a method on a class that should have been checked before use. Look one or two frames up from the fault for the call site that passed the bad pointer in.</li>
-          <li><strong>Use-after-free</strong> — the fault frame may be in a destructor or in code that runs during cleanup. Look for a pattern where the same object is being accessed from multiple code paths, one of which frees it.</li>
-          <li><strong>Buffer overflow</strong> — the fault frame is often in unrelated code that happens to be adjacent in memory. The actual corruption happened earlier. Look for array writes without bounds checks near the crash timeline in the log.</li>
-          <li><strong>Stack corruption</strong> — the stack itself is damaged. Stack overflow (<code>0xC00000FD</code>) is a separate exception code, but a corrupted stack can manifest as an access violation if the return address or a stack variable is overwritten. The stack trace may be truncated or nonsensical above a certain frame.</li>
+          <li><strong>Null pointer dereference</strong> the fault frame is typically deep inside a method on a class that should have been checked before use. Look one or two frames up from the fault for the call site that passed the bad pointer in.</li>
+          <li><strong>Use-after-free</strong> the fault frame may be in a destructor or in code that runs during cleanup. Look for a pattern where the same object is being accessed from multiple code paths, one of which frees it.</li>
+          <li><strong>Buffer overflow</strong> the fault frame is often in unrelated code that happens to be adjacent in memory. The actual corruption happened earlier. Look for array writes without bounds checks near the crash timeline in the log.</li>
+          <li><strong>Stack corruption</strong> the stack itself is damaged. Stack overflow (<code>0xC00000FD</code>) is a separate exception code, but a corrupted stack can manifest as an access violation if the return address or a stack variable is overwritten. The stack trace may be truncated or nonsensical above a certain frame.</li>
         </ul>
 
         <h2>Intel Engine classification</h2>
@@ -315,14 +315,14 @@ Target address:    <span class="c-red">0x0000000000000018</span>
           <code>0x0</code> with a read violation and a matching register state gets classified
           as <em>Null Pointer Dereference</em> with high confidence. A randomized target address
           combined with a write violation and suspicious register patterns gets classified as
-          <em>Memory Corruption</em>. You still need to do the debugging — but having the
+          <em>Memory Corruption</em>. You still need to do the debugging but having the
           classification and the evidence list saves you the first ten minutes of every investigation.
         </p>
 
         <div class="post-cta">
           <div class="post-cta-text">
             <h4>Classify your access violations automatically.</h4>
-            <p>Intel Engine runs on every crash dump — no API key, no internet required.</p>
+            <p>Intel Engine runs on every crash dump no API key, no internet required.</p>
           </div>
           <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
         </div>

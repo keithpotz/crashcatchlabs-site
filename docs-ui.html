@@ -67,12 +67,12 @@
             <h2>Toolbar</h2>
             <p>The toolbar provides quick access to common actions:</p>
             <ul>
-              <li><strong>Open .dmp</strong> — open a Windows minidump file (<code>Ctrl+O</code>)</li>
-              <li><strong>Open UE Folder</strong> — open an Unreal Engine crash folder (<code>Ctrl+Shift+O</code>)</li>
-              <li><strong>Re-analyze</strong> — re-run analysis on the current file, useful after changing symbol paths</li>
-              <li><strong>Symbol Paths</strong> — open the symbol path configuration dialog</li>
-              <li><strong>Export PDF</strong> — export the current report as a PDF (<code>Ctrl+P</code>)</li>
-              <li><strong>Clear</strong> — close the current file and return to the drop zone</li>
+              <li><strong>Open .dmp</strong> open a Windows minidump file (<code>Ctrl+O</code>)</li>
+              <li><strong>Open UE Folder</strong> open an Unreal Engine crash folder (<code>Ctrl+Shift+O</code>)</li>
+              <li><strong>Re-analyze</strong> re-run analysis on the current file, useful after changing symbol paths</li>
+              <li><strong>Symbol Paths</strong> open the symbol path configuration dialog</li>
+              <li><strong>Export PDF</strong> export the current report as a PDF (<code>Ctrl+P</code>)</li>
+              <li><strong>Clear</strong> close the current file and return to the drop zone</li>
             </ul>
             <p>If an update is available, an <strong>Update Available</strong> badge appears in the toolbar. Click it to install.</p>
 
@@ -85,15 +85,15 @@
             <p>Lists every thread that was running at the time of the crash, including the thread ID and suspend count. The crashing thread is highlighted. Select a thread to view its stack trace in the panel below.</p>
 
             <h3>Modules</h3>
-            <p>Lists every DLL and EXE loaded into the process at crash time — base address, size, version, and the path to the associated PDB file if one was found. Unreal Engine modules are flagged with their module type (Engine, Game, Plugin).</p>
+            <p>Lists every DLL and EXE loaded into the process at crash time base address, size, version, and the path to the associated PDB file if one was found. Unreal Engine modules are flagged with their module type (Engine, Game, Plugin).</p>
 
             <h3>Exception</h3>
             <p>Shows the decoded exception record:</p>
             <ul>
-              <li><strong>Exception code</strong> — the raw NTSTATUS code (e.g. <code>0xC0000005</code>) and its human-readable name (e.g. <code>ACCESS_VIOLATION</code>)</li>
-              <li><strong>Fault address</strong> — the instruction address where the exception occurred</li>
-              <li><strong>Access type</strong> — for access violations, whether the fault was a read or write</li>
-              <li><strong>Target address</strong> — for access violations, the memory address that was accessed (a null target address strongly suggests a null pointer dereference)</li>
+              <li><strong>Exception code</strong> the raw NTSTATUS code (e.g. <code>0xC0000005</code>) and its human-readable name (e.g. <code>ACCESS_VIOLATION</code>)</li>
+              <li><strong>Fault address</strong> the instruction address where the exception occurred</li>
+              <li><strong>Access type</strong> for access violations, whether the fault was a read or write</li>
+              <li><strong>Target address</strong> for access violations, the memory address that was accessed (a null target address strongly suggests a null pointer dereference)</li>
             </ul>
 
             <h3>Registers</h3>
@@ -105,11 +105,11 @@
             <h3>Intel</h3>
             <p>The CrashCatch Intel Engine runs a heuristic analysis pass over the crash data and produces a structured finding. This does not require an internet connection or API key.</p>
             <ul>
-              <li><strong>Classification</strong> — the likely crash category: null pointer dereference, stack corruption, heap misuse, race condition, etc.</li>
-              <li><strong>Confidence</strong> — how strongly the evidence supports the classification, expressed as a percentage</li>
-              <li><strong>Summary</strong> — a concise description of what the analysis found</li>
-              <li><strong>Indicators</strong> — the specific pieces of evidence that led to the classification</li>
-              <li><strong>Secondary findings</strong> — additional patterns that may be relevant</li>
+              <li><strong>Classification</strong> the likely crash category: null pointer dereference, stack corruption, heap misuse, race condition, etc.</li>
+              <li><strong>Confidence</strong> how strongly the evidence supports the classification, expressed as a percentage</li>
+              <li><strong>Summary</strong> a concise description of what the analysis found</li>
+              <li><strong>Indicators</strong> the specific pieces of evidence that led to the classification</li>
+              <li><strong>Secondary findings</strong> additional patterns that may be relevant</li>
             </ul>
             <p>For Unreal Engine crashes, Intel also includes UE-specific hints based on engine module patterns and UE exception codes.</p>
 
@@ -117,9 +117,9 @@
             <p>Uses the Claude AI to produce a plain-English explanation of the crash. Requires an Anthropic API key and an internet connection. See the <a href="docs-explain-mode.html">Explain Mode guide</a> for setup instructions.</p>
             <p>The output includes:</p>
             <ul>
-              <li><strong>Root cause</strong> — a one-sentence summary of what caused the crash</li>
-              <li><strong>Evidence</strong> — the specific signals from the dump that support the conclusion</li>
-              <li><strong>Suggested fix</strong> — concrete steps to investigate and resolve the issue</li>
+              <li><strong>Root cause</strong> a one-sentence summary of what caused the crash</li>
+              <li><strong>Evidence</strong> the specific signals from the dump that support the conclusion</li>
+              <li><strong>Suggested fix</strong> concrete steps to investigate and resolve the issue</li>
             </ul>
 
             <h3>Raw JSON</h3>
@@ -128,9 +128,9 @@
             <h2>Preferences</h2>
             <p>Open via <strong>Tools &gt; Preferences</strong>. Available settings:</p>
             <ul>
-              <li><strong>Auto-explain on open</strong> — automatically run Explain Mode whenever a file is loaded (requires API key)</li>
-              <li><strong>Show system frames</strong> — include Windows system DLL frames in the stack trace</li>
-              <li><strong>Dim engine frames</strong> — visually de-emphasize engine and runtime frames so your code stands out</li>
+              <li><strong>Auto-explain on open</strong> automatically run Explain Mode whenever a file is loaded (requires API key)</li>
+              <li><strong>Show system frames</strong> include Windows system DLL frames in the stack trace</li>
+              <li><strong>Dim engine frames</strong> visually de-emphasize engine and runtime frames so your code stands out</li>
             </ul>
 
             <h2>Recent files</h2>

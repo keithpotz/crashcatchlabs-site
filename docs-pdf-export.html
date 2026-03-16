@@ -64,21 +64,21 @@
             <h2>How to export</h2>
             <p>With a crash dump open and analysis complete:</p>
             <ul>
-              <li><strong>Toolbar</strong> — click the <strong>Export PDF</strong> button</li>
-              <li><strong>File menu</strong> — go to <strong>File &gt; Export PDF</strong></li>
-              <li><strong>Keyboard shortcut</strong> — press <kbd>Ctrl+P</kbd></li>
+              <li><strong>Toolbar</strong> click the <strong>Export PDF</strong> button</li>
+              <li><strong>File menu</strong> go to <strong>File &gt; Export PDF</strong></li>
+              <li><strong>Keyboard shortcut</strong> press <kbd>Ctrl+P</kbd></li>
             </ul>
-            <p>A save dialog will appear. Choose a location and filename, then click <strong>Save</strong>. The PDF is generated immediately — no upload or network request is involved.</p>
+            <p>A save dialog will appear. Choose a location and filename, then click <strong>Save</strong>. The PDF is generated immediately no upload or network request is involved.</p>
 
             <h2>What's included in the export</h2>
             <p>The exported PDF contains a structured crash report with the following sections:</p>
             <ul>
-              <li><strong>Summary header</strong> — exception type, fault address, crash timestamp, and OS/processor info</li>
-              <li><strong>Intel Engine findings</strong> — crash classification, confidence score, indicators, and secondary findings</li>
-              <li><strong>Stack trace</strong> — the symbolicated call stack of the crashing thread, with function names, source files, and line numbers where available</li>
-              <li><strong>AI explanation</strong> — root cause, evidence, and suggested fix from Explain Mode, if an explanation was run before exporting</li>
-              <li><strong>Thread list</strong> — all threads with IDs and suspend counts</li>
-              <li><strong>Module list</strong> — loaded DLLs and EXEs with base addresses and versions</li>
+              <li><strong>Summary header</strong> exception type, fault address, crash timestamp, and OS/processor info</li>
+              <li><strong>Intel Engine findings</strong> crash classification, confidence score, indicators, and secondary findings</li>
+              <li><strong>Stack trace</strong> the symbolicated call stack of the crashing thread, with function names, source files, and line numbers where available</li>
+              <li><strong>AI explanation</strong> root cause, evidence, and suggested fix from Explain Mode, if an explanation was run before exporting</li>
+              <li><strong>Thread list</strong> all threads with IDs and suspend counts</li>
+              <li><strong>Module list</strong> loaded DLLs and EXEs with base addresses and versions</li>
             </ul>
             <p>If you opened a UE crash folder, the UE Context section (engine version, build configuration, hardware info) is also included.</p>
 
@@ -91,7 +91,7 @@
             <p>Attach the PDF to your internal bug tracker alongside the original <code>.dmp</code> file. The structured format makes it easy for other engineers to understand the crash without needing to open CrashCatch themselves.</p>
 
             <h3>Submitting to an engine vendor</h3>
-            <p>When reporting a crash to Epic Games or a middleware vendor, the PDF gives their support team a complete picture of the crash context — stack, modules, exception code, and your analysis — in a format they can open without any special tools.</p>
+            <p>When reporting a crash to Epic Games or a middleware vendor, the PDF gives their support team a complete picture of the crash context stack, modules, exception code, and your analysis in a format they can open without any special tools.</p>
 
             <h3>Archiving</h3>
             <p>Export and archive reports for crashes that are fixed, so you have a record of what the crash looked like and what resolved it. This is useful for tracking regressions if a similar crash reappears later.</p>

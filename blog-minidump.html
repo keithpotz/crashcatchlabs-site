@@ -169,7 +169,7 @@
           A user sends you a crash report. Attached is a file with a <code>.dmp</code> extension. You
           open it in a text editor and see binary garbage. You try Windows Event Viewer and get a
           hex offset and a module name. You install WinDbg, spend an hour configuring symbol paths,
-          and eventually get a stack trace — but half the frames just say <code>??? 0x00000000</code>.
+          and eventually get a stack trace but half the frames just say <code>??? 0x00000000</code>.
         </p>
 
         <p>
@@ -180,7 +180,7 @@
         <h2>What is a Windows minidump?</h2>
 
         <p>
-          A minidump is a structured binary snapshot of a Windows process at a specific moment —
+          A minidump is a structured binary snapshot of a Windows process at a specific moment
           typically the moment it crashed. It is written by the operating system automatically for
           some crash types (via Windows Error Reporting), or by your own application using the
           <code>MiniDumpWriteDump</code> Win32 API when an unhandled exception occurs.
@@ -188,23 +188,23 @@
 
         <p>
           Despite the "mini" prefix, a minidump contains a significant amount of information. It is
-          divided into <em>streams</em> — typed sections, each containing a specific category of data.
+          divided into <em>streams</em> typed sections, each containing a specific category of data.
           The streams present in any given dump depend on which flags were passed to
           <code>MiniDumpWriteDump</code>, but a typical crash dump includes:
         </p>
 
         <ul>
-          <li><strong>SystemInfo stream</strong> — OS version, build number, processor architecture, processor count</li>
-          <li><strong>ExceptionInfo stream</strong> — the exception record: code, flags, faulting address, and for access violations, the read/write type and target address</li>
-          <li><strong>ThreadList stream</strong> — every thread active at crash time, with its ID, suspend count, and stack memory</li>
-          <li><strong>ModuleList stream</strong> — every DLL and EXE loaded in the process, with base address, size, version string, and a pointer to the matching PDB file (path, GUID, and age)</li>
-          <li><strong>Memory64List stream</strong> — raw memory regions captured at crash time, used during stack walking to resolve addresses</li>
+          <li><strong>SystemInfo stream</strong> OS version, build number, processor architecture, processor count</li>
+          <li><strong>ExceptionInfo stream</strong> the exception record: code, flags, faulting address, and for access violations, the read/write type and target address</li>
+          <li><strong>ThreadList stream</strong> every thread active at crash time, with its ID, suspend count, and stack memory</li>
+          <li><strong>ModuleList stream</strong> every DLL and EXE loaded in the process, with base address, size, version string, and a pointer to the matching PDB file (path, GUID, and age)</li>
+          <li><strong>Memory64List stream</strong> raw memory regions captured at crash time, used during stack walking to resolve addresses</li>
         </ul>
 
         <p>
           The raw data in all of these streams is binary and not human-readable. To get function names,
           file names, and line numbers from the addresses in the thread stacks, you need
-          <strong>symbolication</strong> — the process of mapping addresses back to source code using
+          <strong>symbolication</strong> the process of mapping addresses back to source code using
           PDB files.
         </p>
 
@@ -257,14 +257,14 @@ Stack:
         </ol>
 
         <p>
-          When it works — when the PDB that exactly matches your binary is on the symbol path — WinDbg
+          When it works when the PDB that exactly matches your binary is on the symbol path — WinDbg
           produces a fully symbolicated stack. When it doesn't work, you get a wall of
           <code>??? 0x00000000</code> frames and you're left guessing why symbols didn't load.
         </p>
 
         <p>
           The PDB matching requirement is strict. WinDbg validates the PDB GUID and age against
-          the binary. A PDB from a slightly different build — even a recompile with the same source —
+          the binary. A PDB from a slightly different build even a recompile with the same source
           won't match. For crashes from user machines running Shipping builds, you need to have
           archived the exact PDB from that specific build. If you haven't, you're working blind.
         </p>
@@ -286,7 +286,7 @@ Stack:
           For system DLLs (<code>ntdll.dll</code>, <code>KERNELBASE.dll</code>, etc.), the Microsoft
           public symbol server works automatically and fills in those frames. For your own code, you
           need your PDB on a path that DbgHelp can reach. Getting this right for a crash from a user
-          machine — where the build may be months old — requires deliberate symbol archiving as part
+          machine where the build may be months old requires deliberate symbol archiving as part
           of your build pipeline.
         </p>
 
@@ -318,7 +318,7 @@ ntdll!RtlUserThreadStart+0x21</code></pre>
 
         <p>
           This is genuinely useful. You can see the faulting function, the line context, and the
-          call chain that led there. But you still need to interpret what happened — the access
+          call chain that led there. But you still need to interpret what happened the access
           violation is at <code>[rax+10h]</code>, which means <code>rax</code> was null or invalid.
           You'd need to look at the register state and reason about what <code>rax</code> was pointing
           to in order to form a hypothesis.
@@ -327,29 +327,29 @@ ntdll!RtlUserThreadStart+0x21</code></pre>
         <h2>Getting the same result without the setup</h2>
 
         <p>
-          CrashCatch Analyze uses the same DbgHelp and DIA SDK APIs under the hood — the identical
-          symbolication stack as WinDbg — but wraps it in a drag-and-drop interface. Open a
+          CrashCatch Analyze uses the same DbgHelp and DIA SDK APIs under the hood the identical
+          symbolication stack as WinDbg but wraps it in a drag-and-drop interface. Open a
           <code>.dmp</code> file, add your PDB directories in <strong>Tools &gt; Symbol Paths</strong>,
           and you get a fully symbolicated stack immediately.
         </p>
 
         <p>
           Beyond symbolication, the Intel Engine runs automatically on every dump and classifies
-          the crash — null pointer, heap corruption, stack overflow, race condition — with a
+          the crash null pointer, heap corruption, stack overflow, race condition with a
           confidence score and a list of the specific indicators that led to the classification.
           No command-line flags. No <code>.reload</code> commands.
         </p>
 
         <p>
-          If you want a plain-English explanation — "here's what caused this crash and where to
-          look" — Explain Mode sends a structured summary to Claude and returns a root cause,
+          If you want a plain-English explanation "here's what caused this crash and where to
+          look" Explain Mode sends a structured summary to Claude and returns a root cause,
           evidence list, and suggested fix.
         </p>
 
         <div class="post-cta">
           <div class="post-cta-text">
             <h4>Stop reading raw hex. Start reading crashes.</h4>
-            <p>Download CrashCatch Analyze — free beta, Windows x64.</p>
+            <p>Download CrashCatch Analyze free beta, Windows x64.</p>
           </div>
           <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
         </div>

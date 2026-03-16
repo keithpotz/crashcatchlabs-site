@@ -146,7 +146,7 @@
       <div class="page-hero-inner">
         <div class="section-label">CrashCatch Labs Blog</div>
         <h1>Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</h1>
-        <p>When Unreal Engine crashes it doesn't write a single file — it writes a folder. Here's what each piece contains, what it tells you, and why most developers only look at half of it.</p>
+        <p>When Unreal Engine crashes it doesn't write a single file  it writes a folder. Here's what each piece contains, what it tells you, and why most developers only look at half of it.</p>
       </div>
     </div>
   </div>
@@ -186,7 +186,7 @@ CrashReportClient.ini</code></pre>
 
         <p>
           Most developers drag the <code>.dmp</code> file into WinDbg and ignore everything else.
-          That's understandable — the minidump is the standard crash artifact and it contains the
+          That's understandable the minidump is the standard crash artifact and it contains the
           stack trace. But <code>CrashContext.runtime-xml</code> often contains information that
           the minidump doesn't, and understanding both together gives you a much clearer picture
           of what happened.
@@ -203,8 +203,8 @@ CrashReportClient.ini</code></pre>
 
         <p>
           The complication with UE is the stack size. A typical UE crash stack contains
-          hundreds of frames — the engine's own tick loop, the actor tick chain, the animation
-          system, the physics thread dispatcher — before you get anywhere near your game code.
+          hundreds of frames the engine's own tick loop, the actor tick chain, the animation
+          system, the physics thread dispatcher before you get anywhere near your game code.
           For example:
         </p>
 
@@ -279,12 +279,12 @@ CrashReportClient.ini</code></pre>
         <p>Here's what each field tells you:</p>
 
         <ul>
-          <li><strong>EngineVersion</strong> — the exact UE build. Critical for checking engine release notes for known crash bugs in that version.</li>
-          <li><strong>BuildConfiguration</strong> — Development, DebugGame, Shipping, etc. This directly affects how useful your stack trace will be (more on this below).</li>
-          <li><strong>EngineMode</strong> — whether it crashed in the Editor, a packaged Game build, a Server, etc.</li>
+          <li><strong>EngineVersion</strong> the exact UE build. Critical for checking engine release notes for known crash bugs in that version.</li>
+          <li><strong>BuildConfiguration</strong> Development, DebugGame, Shipping, etc. This directly affects how useful your stack trace will be (more on this below).</li>
+          <li><strong>EngineMode</strong> whether it crashed in the Editor, a packaged Game build, a Server, etc.</li>
           <li><strong>CrashType / IsEnsure / IsAssert</strong> — distinguishes a hard crash from an <code>ensure()</code> failure or a <code>check()</code> assertion. An ensure is a soft failure that doesn't terminate the process; a check/assert terminates immediately.</li>
-          <li><strong>bIsOOM</strong> — whether an out-of-memory condition was detected before the crash. If true, the stack trace may be misleading — OOM in UE often manifests as an access violation in an apparently unrelated location.</li>
-          <li><strong>CallStack</strong> — UE's own call stack string, captured by the engine's crash handler. This is independent of the minidump stack walk and can sometimes provide function names even when symbol resolution fails on the <code>.dmp</code> side.</li>
+          <li><strong>bIsOOM</strong> whether an out-of-memory condition was detected before the crash. If true, the stack trace may be misleading OOM in UE often manifests as an access violation in an apparently unrelated location.</li>
+          <li><strong>CallStack</strong> UE's own call stack string, captured by the engine's crash handler. This is independent of the minidump stack walk and can sometimes provide function names even when symbol resolution fails on the <code>.dmp</code> side.</li>
         </ul>
 
         <h2>UE exception codes</h2>
@@ -300,7 +300,7 @@ CrashReportClient.ini</code></pre>
         </ul>
 
         <p>
-          If you see either of these in the Exception tab, the crash was deliberate — the engine
+          If you see either of these in the Exception tab, the crash was deliberate the engine
           detected an error condition and triggered the reporter intentionally. The interesting
           information is in the log file and the UE call stack, not in the exception address.
         </p>
@@ -314,16 +314,16 @@ CrashReportClient.ini</code></pre>
         </p>
 
         <ul>
-          <li><strong>DebugGame</strong> — full symbols, no inlining, no optimization. Best possible stack trace. Use this when actively debugging a crash on your dev machine.</li>
-          <li><strong>Development</strong> — symbols available, some optimization. Good stack traces, some inlined frames may be missing.</li>
-          <li><strong>Shipping</strong> — symbols stripped from the binary by default. Stack traces contain addresses with no function names unless you separately archive the PDB. Many inlined frames collapse into their callers. The stack may look completely different from what you'd see in Development.</li>
+          <li><strong>DebugGame</strong> full symbols, no inlining, no optimization. Best possible stack trace. Use this when actively debugging a crash on your dev machine.</li>
+          <li><strong>Development</strong> symbols available, some optimization. Good stack traces, some inlined frames may be missing.</li>
+          <li><strong>Shipping</strong> symbols stripped from the binary by default. Stack traces contain addresses with no function names unless you separately archive the PDB. Many inlined frames collapse into their callers. The stack may look completely different from what you'd see in Development.</li>
         </ul>
 
         <p>
           For crashes from player machines running Shipping builds: if you don't have a symbol
           archive process that stores the PDB alongside each Shipping build you distribute,
           you will not be able to symbolicate those crashes. Build this into your pipeline
-          before you ship — it's much harder to recover PDBs after the fact.
+          before you ship it's much harder to recover PDBs after the fact.
         </p>
 
         <h2>Analyzing UE crash folders in CrashCatch</h2>
@@ -335,14 +335,14 @@ CrashReportClient.ini</code></pre>
           runs the standard minidump analysis, and adds a UE Context tab with all the
           engine metadata. Engine frames are identified and can be dimmed so your game code
           stands out. The Intel Engine activates UE-specific heuristics when UE modules are
-          detected — garbage collector issues, async loading deadlocks, and Blueprint vs.
+          detected garbage collector issues, async loading deadlocks, and Blueprint vs.
           native frame classification.
         </p>
 
         <div class="post-cta">
           <div class="post-cta-text">
             <h4>Built specifically for Unreal Engine crashes.</h4>
-            <p>Open your UE crash folder in CrashCatch — free beta, Windows x64.</p>
+            <p>Open your UE crash folder in CrashCatch free beta, Windows x64.</p>
           </div>
           <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
         </div>
