@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read a Windows Minidump File (Without WinDbg) — CrashCatch Blog</title>
+  <meta name="description" content="Your app crashed and you have a .dmp file. Here's what's actually inside a Windows minidump, why WinDbg is painful, and how to get useful information out without the setup overhead.">
+  <meta property="og:title" content="How to Read a Windows Minidump File (Without WinDbg) — CrashCatch Blog">
+  <meta property="og:description" content="What's actually inside a Windows minidump file, why WinDbg is painful, and how to get useful information out without the setup overhead.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-minidump.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-minidump.html">
+  <meta property="article:published_time" content="2026-03-16T00:00:00Z">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="Windows">
+  <meta property="article:tag" content="minidump">
+  <meta property="article:tag" content="crash analysis">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How to Read a Windows Minidump File (Without WinDbg)",
+    "description": "Your app crashed and you have a .dmp file. Here's what's actually inside a Windows minidump, why WinDbg is painful, and how to get useful information out without the setup overhead.",
+    "url": "https://crashcatchlabs.com/blog-minidump.html",
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "author": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "url": "https://crashcatchlabs.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://crashcatchlabs.com/logo.svg"
+      }
+    },
+    "image": "https://crashcatchlabs.com/og-image.png",
+    "keywords": "minidump, .dmp file, Windows crash, WinDbg, crash analysis, C++, symbolication"
+  }
+  </script>
+
+  <style>
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .post-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .post-cta {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .post-cta-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .post-cta-text p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .post-nav-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .post-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .post-nav a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .post-meta { gap: 10px; }
+      .post-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">CrashCatch Labs Blog</div>
+        <h1>How to Read a Windows Minidump File (Without WinDbg)</h1>
+        <p>Your app crashed and you have a .dmp file. Here's what's actually inside it, why WinDbg is painful, and how to get useful information out without the setup overhead.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="post-meta">
+          <span>March 16, 2026</span>
+          <span>·</span>
+          <span>7 min read</span>
+          <span>·</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+          <span class="post-tag">Minidump</span>
+        </div>
+
+        <p>
+          A user sends you a crash report. Attached is a file with a <code>.dmp</code> extension. You
+          open it in a text editor and see binary garbage. You try Windows Event Viewer and get a
+          hex offset and a module name. You install WinDbg, spend an hour configuring symbol paths,
+          and eventually get a stack trace — but half the frames just say <code>??? 0x00000000</code>.
+        </p>
+
+        <p>
+          This is the standard experience. It doesn't have to be. Let's start with what a minidump
+          actually is, then work through how to get something useful out of it.
+        </p>
+
+        <h2>What is a Windows minidump?</h2>
+
+        <p>
+          A minidump is a structured binary snapshot of a Windows process at a specific moment —
+          typically the moment it crashed. It is written by the operating system automatically for
+          some crash types (via Windows Error Reporting), or by your own application using the
+          <code>MiniDumpWriteDump</code> Win32 API when an unhandled exception occurs.
+        </p>
+
+        <p>
+          Despite the "mini" prefix, a minidump contains a significant amount of information. It is
+          divided into <em>streams</em> — typed sections, each containing a specific category of data.
+          The streams present in any given dump depend on which flags were passed to
+          <code>MiniDumpWriteDump</code>, but a typical crash dump includes:
+        </p>
+
+        <ul>
+          <li><strong>SystemInfo stream</strong> — OS version, build number, processor architecture, processor count</li>
+          <li><strong>ExceptionInfo stream</strong> — the exception record: code, flags, faulting address, and for access violations, the read/write type and target address</li>
+          <li><strong>ThreadList stream</strong> — every thread active at crash time, with its ID, suspend count, and stack memory</li>
+          <li><strong>ModuleList stream</strong> — every DLL and EXE loaded in the process, with base address, size, version string, and a pointer to the matching PDB file (path, GUID, and age)</li>
+          <li><strong>Memory64List stream</strong> — raw memory regions captured at crash time, used during stack walking to resolve addresses</li>
+        </ul>
+
+        <p>
+          The raw data in all of these streams is binary and not human-readable. To get function names,
+          file names, and line numbers from the addresses in the thread stacks, you need
+          <strong>symbolication</strong> — the process of mapping addresses back to source code using
+          PDB files.
+        </p>
+
+        <h2>What the raw output looks like</h2>
+
+        <p>
+          If you open a <code>.dmp</code> in Windows Event Viewer or look at what Windows Error Reporting
+          captures, you typically get something like this:
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Windows Event Viewer — Application Error</span>
+          </div>
+          <div class="code-window-body">
+<pre><code>Faulting application name: MyGame.exe
+Faulting module name: MyGame-Win64-Shipping.dll
+Exception code: <span class="c-red">0xc0000005</span>
+Fault offset: <span class="c-muted">0x0000000001a2f4c1</span>
+
+Stack:
+  ntdll.dll
+  KERNELBASE.dll
+  MyGame-Win64-Shipping.dll + 0x1a2f4c1
+  ...</code></pre>
+          </div>
+        </div>
+
+        <p>
+          You know it crashed in your game DLL. You have an offset. You have nothing else.
+        </p>
+
+        <h2>The traditional approach: WinDbg</h2>
+
+        <p>
+          WinDbg is the authoritative Windows debugging tool and it can fully parse a minidump.
+          Getting it to produce useful output requires:
+        </p>
+
+        <ol>
+          <li>Installing the Windows SDK or WinDbg Preview from the Microsoft Store</li>
+          <li>Configuring a symbol path — a semicolon-delimited list of local PDB directories and/or symbol server URLs</li>
+          <li>Opening the dump file (<strong>File &gt; Open Crash Dump</strong>)</li>
+          <li>Running <code>.sympath srv*C:\Symbols*https://msdl.microsoft.com/download/symbols</code> to add the Microsoft public symbol server</li>
+          <li>Running <code>.reload /f</code> to force-load symbols</li>
+          <li>Running <code>!analyze -v</code> to get an automated analysis</li>
+        </ol>
+
+        <p>
+          When it works — when the PDB that exactly matches your binary is on the symbol path — WinDbg
+          produces a fully symbolicated stack. When it doesn't work, you get a wall of
+          <code>??? 0x00000000</code> frames and you're left guessing why symbols didn't load.
+        </p>
+
+        <p>
+          The PDB matching requirement is strict. WinDbg validates the PDB GUID and age against
+          the binary. A PDB from a slightly different build — even a recompile with the same source —
+          won't match. For crashes from user machines running Shipping builds, you need to have
+          archived the exact PDB from that specific build. If you haven't, you're working blind.
+        </p>
+
+        <h2>The symbol path problem</h2>
+
+        <p>
+          Assuming you have the right PDB, you still need to tell DbgHelp (the Windows symbolication
+          API that WinDbg uses under the hood) where to find it. Symbol paths can be:
+        </p>
+
+        <ul>
+          <li>A local directory: <code>C:\MyGame\Build\Symbols</code></li>
+          <li>A symbol server with local cache: <code>srv*C:\SymCache*https://msdl.microsoft.com/download/symbols</code></li>
+          <li>Multiple paths chained together with semicolons</li>
+        </ul>
+
+        <p>
+          For system DLLs (<code>ntdll.dll</code>, <code>KERNELBASE.dll</code>, etc.), the Microsoft
+          public symbol server works automatically and fills in those frames. For your own code, you
+          need your PDB on a path that DbgHelp can reach. Getting this right for a crash from a user
+          machine — where the build may be months old — requires deliberate symbol archiving as part
+          of your build pipeline.
+        </p>
+
+        <h2>What the output looks like when it works</h2>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">WinDbg — !analyze -v (symbolicated)</span>
+          </div>
+          <div class="code-window-body">
+<pre><code>EXCEPTION_CODE: (NTSTATUS) 0xc0000005
+ACCESS_VIOLATION
+
+FAULTING_IP:
+MyGame_Win64!AEnemyCharacter::TakeDamage+0x34
+00007ff6`1a2f4c35 488b4810  mov     rcx,qword ptr [rax+10h]
+
+STACK_TEXT:
+MyGame_Win64!AEnemyCharacter::TakeDamage+0x34
+MyGame_Win64!UCombatComponent::ApplyDamage+0x118
+MyGame_Win64!AGameMode::HandleHit+0x2c
+UE4Editor_Engine!UWorld::Tick+0x4a1
+ntdll!RtlUserThreadStart+0x21</code></pre>
+          </div>
+        </div>
+
+        <p>
+          This is genuinely useful. You can see the faulting function, the line context, and the
+          call chain that led there. But you still need to interpret what happened — the access
+          violation is at <code>[rax+10h]</code>, which means <code>rax</code> was null or invalid.
+          You'd need to look at the register state and reason about what <code>rax</code> was pointing
+          to in order to form a hypothesis.
+        </p>
+
+        <h2>Getting the same result without the setup</h2>
+
+        <p>
+          CrashCatch Analyze uses the same DbgHelp and DIA SDK APIs under the hood — the identical
+          symbolication stack as WinDbg — but wraps it in a drag-and-drop interface. Open a
+          <code>.dmp</code> file, add your PDB directories in <strong>Tools &gt; Symbol Paths</strong>,
+          and you get a fully symbolicated stack immediately.
+        </p>
+
+        <p>
+          Beyond symbolication, the Intel Engine runs automatically on every dump and classifies
+          the crash — null pointer, heap corruption, stack overflow, race condition — with a
+          confidence score and a list of the specific indicators that led to the classification.
+          No command-line flags. No <code>.reload</code> commands.
+        </p>
+
+        <p>
+          If you want a plain-English explanation — "here's what caused this crash and where to
+          look" — Explain Mode sends a structured summary to Claude and returns a root cause,
+          evidence list, and suggested fix.
+        </p>
+
+        <div class="post-cta">
+          <div class="post-cta-text">
+            <h4>Stop reading raw hex. Start reading crashes.</h4>
+            <p>Download CrashCatch Analyze — free beta, Windows x64.</p>
+          </div>
+          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
+        </div>
+
+        <div class="post-nav">
+          <div class="post-nav-label">More from the blog</div>
+          <a href="blog.html">Why C++ Crash Dumps Are Still Unreadable</a>
+          <a href="blog-ue-crash.html">Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</a>
+          <a href="blog-access-violation.html">Access Violation 0xC0000005: What It Means and How to Find the Cause</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

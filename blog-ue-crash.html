@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unreal Engine Crash Analysis: What the Crash Folder Actually Contains — CrashCatch Blog</title>
+  <meta name="description" content="When Unreal Engine crashes it doesn't write a .dmp file — it writes a folder. Here's what CrashContext.runtime-xml contains, how to read the UE call stack, and why build configuration matters.">
+  <meta property="og:title" content="Unreal Engine Crash Analysis: What the Crash Folder Actually Contains — CrashCatch Blog">
+  <meta property="og:description" content="What's inside an Unreal Engine crash folder, what CrashContext.runtime-xml tells you, and how to find your game code in a stack full of engine frames.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-ue-crash.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-ue-crash.html">
+  <meta property="article:published_time" content="2026-03-16T00:00:00Z">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="Unreal Engine">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="crash analysis">
+  <meta property="article:tag" content="Windows">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Unreal Engine Crash Analysis: What the Crash Folder Actually Contains",
+    "description": "When Unreal Engine crashes it doesn't write a .dmp file — it writes a folder. Here's what CrashContext.runtime-xml contains, how to read the UE call stack, and why build configuration matters.",
+    "url": "https://crashcatchlabs.com/blog-ue-crash.html",
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "author": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "url": "https://crashcatchlabs.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://crashcatchlabs.com/logo.svg"
+      }
+    },
+    "image": "https://crashcatchlabs.com/og-image.png",
+    "keywords": "Unreal Engine, crash folder, CrashContext, minidump, UE4, UE5, crash analysis, C++"
+  }
+  </script>
+
+  <style>
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .post-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .post-cta {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .post-cta-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .post-cta-text p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .post-nav-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .post-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .post-nav a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .post-meta { gap: 10px; }
+      .post-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">CrashCatch Labs Blog</div>
+        <h1>Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</h1>
+        <p>When Unreal Engine crashes it doesn't write a single file — it writes a folder. Here's what each piece contains, what it tells you, and why most developers only look at half of it.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="post-meta">
+          <span>March 16, 2026</span>
+          <span>·</span>
+          <span>8 min read</span>
+          <span>·</span>
+          <span class="post-tag">Unreal Engine</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+        </div>
+
+        <p>
+          A typical Unreal Engine crash on Windows produces a folder that looks something like this:
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">%LOCALAPPDATA%\MyGame\Saved\Crashes\CrashReport-2026.03.15-14.22.31</span>
+          </div>
+          <div class="code-window-body">
+<pre><code>CrashContext.runtime-xml
+UE4Minidump.dmp
+MyGame.log
+CrashReportClient.ini</code></pre>
+          </div>
+        </div>
+
+        <p>
+          Most developers drag the <code>.dmp</code> file into WinDbg and ignore everything else.
+          That's understandable — the minidump is the standard crash artifact and it contains the
+          stack trace. But <code>CrashContext.runtime-xml</code> often contains information that
+          the minidump doesn't, and understanding both together gives you a much clearer picture
+          of what happened.
+        </p>
+
+        <h2>The minidump</h2>
+
+        <p>
+          <code>UE4Minidump.dmp</code> (or <code>UE5Minidump.dmp</code>) is a standard Windows
+          minidump written by Unreal's crash handler when an unhandled exception occurs. It contains
+          the exception record, all thread stacks, loaded modules, register state, and partial memory.
+          Everything described in a standard minidump analysis applies here.
+        </p>
+
+        <p>
+          The complication with UE is the stack size. A typical UE crash stack contains
+          hundreds of frames — the engine's own tick loop, the actor tick chain, the animation
+          system, the physics thread dispatcher — before you get anywhere near your game code.
+          For example:
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">UE5 crash stack — Development build</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-muted">00  ntdll!RtlUserThreadStart</span>
+<span class="c-muted">01  kernel32!BaseThreadInitThunk</span>
+<span class="c-muted">02  UE5Editor!FRunnableThread::Run</span>
+<span class="c-muted">03  UE5Editor!FEngineLoop::Tick</span>
+<span class="c-muted">04  UE5Editor!UGameEngine::Tick</span>
+<span class="c-muted">05  UE5Editor!UWorld::Tick</span>
+<span class="c-muted">06  UE5Editor!AActor::TickActor</span>
+<span class="c-muted">07  UE5Editor!UActorComponent::TickComponent</span>
+<span class="c-muted">...</span>
+<span class="c-muted">38  UE5Editor!UActorComponent::TickComponent</span>
+<span class="c-func">39  MyGame!APlayerCharacter::Update</span>      <span class="c-path">PlayerCharacter.cpp:312</span>
+<span class="c-func">40  MyGame!UWeaponComponent::FireWeapon</span>   <span class="c-path">WeaponComponent.cpp:88</span>
+<span class="c-red">41  MyGame!AProjectile::Initialize</span>        <span class="c-path">Projectile.cpp:44</span></code></pre>
+          </div>
+        </div>
+
+        <p>
+          Frames 0–38 are engine infrastructure. The crash is at frame 41, in your code.
+          Without a tool that understands which frames belong to the engine and which belong
+          to your game, finding the relevant frames means manually scrolling through dozens of
+          identical-looking engine entries.
+        </p>
+
+        <h2>CrashContext.runtime-xml</h2>
+
+        <p>
+          This file is what makes UE crash analysis different from analyzing a generic C++
+          crash. Unreal's crash handler captures engine-level context that doesn't exist in
+          the minidump. A typical <code>CrashContext.runtime-xml</code> looks like this:
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">CrashContext.runtime-xml (excerpt)</span>
+          </div>
+          <div class="code-window-body">
+<pre><code>&lt;RuntimeProperties&gt;
+  &lt;GameName&gt;MyGame&lt;/GameName&gt;
+  &lt;EngineVersion&gt;5.3.2-26560700&lt;/EngineVersion&gt;
+  &lt;BuildConfiguration&gt;Development&lt;/BuildConfiguration&gt;
+  &lt;EngineMode&gt;Game&lt;/EngineMode&gt;
+  &lt;CrashType&gt;Crash&lt;/CrashType&gt;
+  &lt;IsEnsure&gt;false&lt;/IsEnsure&gt;
+  &lt;IsAssert&gt;false&lt;/IsAssert&gt;
+  &lt;CPUBrand&gt;AMD Ryzen 9 7950X&lt;/CPUBrand&gt;
+  &lt;GPUBrand&gt;NVIDIA GeForce RTX 4090&lt;/GPUBrand&gt;
+  &lt;TotalPhysicalRAM&gt;34359738368&lt;/TotalPhysicalRAM&gt;
+  &lt;bIsOOM&gt;false&lt;/bIsOOM&gt;
+  &lt;CallStack&gt;
+    AProjectile::Initialize [Projectile.cpp:44]
+    UWeaponComponent::FireWeapon [WeaponComponent.cpp:88]
+    ...
+  &lt;/CallStack&gt;
+&lt;/RuntimeProperties&gt;</code></pre>
+          </div>
+        </div>
+
+        <p>Here's what each field tells you:</p>
+
+        <ul>
+          <li><strong>EngineVersion</strong> — the exact UE build. Critical for checking engine release notes for known crash bugs in that version.</li>
+          <li><strong>BuildConfiguration</strong> — Development, DebugGame, Shipping, etc. This directly affects how useful your stack trace will be (more on this below).</li>
+          <li><strong>EngineMode</strong> — whether it crashed in the Editor, a packaged Game build, a Server, etc.</li>
+          <li><strong>CrashType / IsEnsure / IsAssert</strong> — distinguishes a hard crash from an <code>ensure()</code> failure or a <code>check()</code> assertion. An ensure is a soft failure that doesn't terminate the process; a check/assert terminates immediately.</li>
+          <li><strong>bIsOOM</strong> — whether an out-of-memory condition was detected before the crash. If true, the stack trace may be misleading — OOM in UE often manifests as an access violation in an apparently unrelated location.</li>
+          <li><strong>CallStack</strong> — UE's own call stack string, captured by the engine's crash handler. This is independent of the minidump stack walk and can sometimes provide function names even when symbol resolution fails on the <code>.dmp</code> side.</li>
+        </ul>
+
+        <h2>UE exception codes</h2>
+
+        <p>
+          Unreal Engine defines its own exception codes for non-crash events that it captures
+          through its crash handler:
+        </p>
+
+        <ul>
+          <li><code>0xE0000001</code> — <strong>UnrealFatalError</strong> — a <code>UE_LOG(Fatal, ...)</code> call or a <code>check()</code> / <code>checkf()</code> assertion failure. The engine calls <code>RaiseException</code> with this code to trigger the crash reporter cleanly.</li>
+          <li><code>0xE0000002</code> — <strong>UnrealEnsure</strong> — an <code>ensure()</code> or <code>ensureMsgf()</code> that evaluated to false. The process continues after an ensure failure, but the crash reporter fires to capture the state.</li>
+        </ul>
+
+        <p>
+          If you see either of these in the Exception tab, the crash was deliberate — the engine
+          detected an error condition and triggered the reporter intentionally. The interesting
+          information is in the log file and the UE call stack, not in the exception address.
+        </p>
+
+        <h2>Build configuration and stack quality</h2>
+
+        <p>
+          This is the most practically important thing to know about UE crash analysis. The
+          build configuration you were running when the crash occurred determines how useful
+          your stack trace will be:
+        </p>
+
+        <ul>
+          <li><strong>DebugGame</strong> — full symbols, no inlining, no optimization. Best possible stack trace. Use this when actively debugging a crash on your dev machine.</li>
+          <li><strong>Development</strong> — symbols available, some optimization. Good stack traces, some inlined frames may be missing.</li>
+          <li><strong>Shipping</strong> — symbols stripped from the binary by default. Stack traces contain addresses with no function names unless you separately archive the PDB. Many inlined frames collapse into their callers. The stack may look completely different from what you'd see in Development.</li>
+        </ul>
+
+        <p>
+          For crashes from player machines running Shipping builds: if you don't have a symbol
+          archive process that stores the PDB alongside each Shipping build you distribute,
+          you will not be able to symbolicate those crashes. Build this into your pipeline
+          before you ship — it's much harder to recover PDBs after the fact.
+        </p>
+
+        <h2>Analyzing UE crash folders in CrashCatch</h2>
+
+        <p>
+          CrashCatch Analyze has dedicated support for the UE crash folder format via
+          <strong>File &gt; Open UE Folder</strong> (<kbd>Ctrl+Shift+O</kbd>). It locates
+          the <code>.dmp</code> file and <code>CrashContext.runtime-xml</code> automatically,
+          runs the standard minidump analysis, and adds a UE Context tab with all the
+          engine metadata. Engine frames are identified and can be dimmed so your game code
+          stands out. The Intel Engine activates UE-specific heuristics when UE modules are
+          detected — garbage collector issues, async loading deadlocks, and Blueprint vs.
+          native frame classification.
+        </p>
+
+        <div class="post-cta">
+          <div class="post-cta-text">
+            <h4>Built specifically for Unreal Engine crashes.</h4>
+            <p>Open your UE crash folder in CrashCatch — free beta, Windows x64.</p>
+          </div>
+          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
+        </div>
+
+        <div class="post-nav">
+          <div class="post-nav-label">More from the blog</div>
+          <a href="blog.html">Why C++ Crash Dumps Are Still Unreadable</a>
+          <a href="blog-minidump.html">How to Read a Windows Minidump File (Without WinDbg)</a>
+          <a href="blog-access-violation.html">Access Violation 0xC0000005: What It Means and How to Find the Cause</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

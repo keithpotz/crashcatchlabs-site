@@ -101,6 +101,28 @@
       margin: 0;
     }
 
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .post-nav-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .post-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .post-nav a:hover { text-decoration: underline; }
     @media (max-width: 600px) {
       .post-meta { gap: 10px; }
       .post-cta { flex-direction: column; align-items: flex-start; }
@@ -341,6 +363,13 @@ Stack:
           <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
         </div>
 
+        <div class="post-nav">
+          <div class="post-nav-label">More from the blog</div>
+          <a href="blog-minidump.html">How to Read a Windows Minidump File (Without WinDbg)</a>
+          <a href="blog-ue-crash.html">Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</a>
+          <a href="blog-access-violation.html">Access Violation 0xC0000005: What It Means and How to Find the Cause</a>
+        </div>
+
       </div>
     </div>
   </main>
@@ -367,8 +396,7 @@ Stack:
           <ul>
             <li><a href="docs.html">Documentation</a></li>
             <li><a href="api.html">API Reference</a></li>
-            <li><a href="docs.html">Docs</a></li>
-        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>
         </div>
         <div class="footer-col">

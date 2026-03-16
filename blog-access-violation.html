@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Violation 0xC0000005: What It Means and How to Find the Cause — CrashCatch Blog</title>
+  <meta name="description" content="0xC0000005 is the most common Windows exception code. Here's how to read the target address, register state, and stack to determine whether you're dealing with a null pointer, use-after-free, or buffer overflow.">
+  <meta property="og:title" content="Access Violation 0xC0000005: What It Means and How to Find the Cause — CrashCatch Blog">
+  <meta property="og:description" content="How to read the target address, register state, and stack to determine whether a 0xC0000005 is a null pointer, use-after-free, or buffer overflow.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-access-violation.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-access-violation.html">
+  <meta property="article:published_time" content="2026-03-16T00:00:00Z">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="Windows">
+  <meta property="article:tag" content="access violation">
+  <meta property="article:tag" content="crash analysis">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Access Violation 0xC0000005: What It Means and How to Find the Cause",
+    "description": "0xC0000005 is the most common Windows exception code. Here's how to read the target address, register state, and stack to determine whether you're dealing with a null pointer, use-after-free, or buffer overflow.",
+    "url": "https://crashcatchlabs.com/blog-access-violation.html",
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "author": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "url": "https://crashcatchlabs.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://crashcatchlabs.com/logo.svg"
+      }
+    },
+    "image": "https://crashcatchlabs.com/og-image.png",
+    "keywords": "access violation, 0xC0000005, STATUS_ACCESS_VIOLATION, null pointer, use-after-free, buffer overflow, C++, Windows crash"
+  }
+  </script>
+
+  <style>
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .post-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .post-cta {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .post-cta-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .post-cta-text p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .post-nav-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .post-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .post-nav a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .post-meta { gap: 10px; }
+      .post-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">CrashCatch Labs Blog</div>
+        <h1>Access Violation 0xC0000005: What It Means and How to Find the Cause</h1>
+        <p>The most common Windows exception code. Here's how to read the target address, register state, and stack to determine what actually went wrong.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="post-meta">
+          <span>March 16, 2026</span>
+          <span>·</span>
+          <span>8 min read</span>
+          <span>·</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+          <span class="post-tag">Crash Analysis</span>
+        </div>
+
+        <p>
+          If you've worked with C++ on Windows for any length of time, you've seen
+          <code>0xC0000005</code>. It's <code>STATUS_ACCESS_VIOLATION</code> — the NTSTATUS code
+          Windows raises when a program attempts to access a memory address it doesn't have
+          permission to read or write. It is by far the most common exception code in crash dumps.
+        </p>
+
+        <p>
+          What the code doesn't tell you is <em>why</em> the access was invalid, and that's where
+          the real diagnostic work begins. An access violation can be a null pointer dereference,
+          a use-after-free, a buffer overflow, a race condition, or a stack corruption. Each has
+          different causes and different fixes. Telling them apart requires reading the crash data
+          carefully rather than just noting the exception code.
+        </p>
+
+        <h2>Read vs. write: the first distinction</h2>
+
+        <p>
+          Every access violation has a type: <strong>read</strong> or <strong>write</strong>. This
+          is shown in the Exception tab in CrashCatch and in WinDbg's output.
+        </p>
+
+        <ul>
+          <li>A <strong>read violation</strong> means the program tried to read from an address it couldn't access. The most common cause is a null or dangling pointer being dereferenced.</li>
+          <li>A <strong>write violation</strong> means the program tried to write to an address it couldn't access. This often indicates a buffer overflow, writing to freed memory, or writing to a read-only region.</li>
+        </ul>
+
+        <p>
+          Write violations to addresses in your own heap — particularly to addresses that look
+          suspiciously like valid heap addresses — are worth treating as potential heap corruption.
+          Read violations at <code>0x0</code> or small non-zero offsets are almost always null
+          pointer dereferences.
+        </p>
+
+        <h2>Reading the target address</h2>
+
+        <p>
+          The target address (the address that was being accessed when the fault occurred) is the
+          single most useful piece of information for classifying an access violation. Here's how
+          to read it:
+        </p>
+
+        <h3>Target address: 0x0000000000000000</h3>
+        <p>
+          Classic null pointer dereference. The code attempted to dereference a pointer that was
+          null. Look at the faulting instruction and the frame that owns it — you're looking for a
+          pointer that wasn't initialized or wasn't checked before use.
+        </p>
+
+        <h3>Target address: small non-zero offset (0x8, 0x10, 0x18, 0x20...)</h3>
+        <p>
+          Almost certainly a null pointer dereference through a struct or class. The code is
+          accessing a member of an object, but the object pointer is null. The offset corresponds
+          to the byte offset of that member within the struct. For example, a target address of
+          <code>0x18</code> on a class with a pointer at offset <code>0x18</code> means the
+          this-pointer was null when accessing that member.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Exception detail</span>
+          </div>
+          <div class="code-window-body">
+<pre><code>Exception code:    <span class="c-red">0xC0000005</span>  ACCESS_VIOLATION
+Type:              read
+Fault address:     <span class="c-muted">0x00007FF6A3C28E1</span>
+Target address:    <span class="c-red">0x0000000000000018</span>
+
+<span class="c-muted">→ Accessing member at offset 0x18 on a null pointer.</span>
+<span class="c-muted">→ Check the owning object before accessing this member.</span></code></pre>
+          </div>
+        </div>
+
+        <h3>Target address: looks like a valid heap address but isn't</h3>
+        <p>
+          This pattern — a non-null address in the range of your heap that causes an access
+          violation — is the signature of a <strong>use-after-free</strong> or dangling pointer.
+          The object was valid at some point, but the memory has since been freed and possibly
+          reallocated. Accesses to it may succeed silently (if the memory was reallocated with
+          compatible data) or crash with an access violation (if the page was decommitted).
+        </p>
+
+        <h3>Target address: debug heap sentinel values</h3>
+        <p>
+          In debug builds compiled with MSVC, the debug heap fills freed memory with known
+          patterns. If your target address contains these values, the pointer came directly
+          from freed memory:
+        </p>
+        <ul>
+          <li><code>0xDDDDDDDDDDDDDDDD</code> — freed heap memory (debug CRT)</li>
+          <li><code>0xFEEEFEEEFEEEFEEE</code> — freed heap memory (HeapFree)</li>
+          <li><code>0xCDCDCDCDCDCDCDCD</code> — uninitialized heap memory (debug CRT)</li>
+        </ul>
+        <p>
+          Seeing these in a target address in a debug build is definitive: you have a dangling
+          pointer. The fix is finding where the object is being freed while still being referenced.
+        </p>
+
+        <h3>Target address: large, random-looking value</h3>
+        <p>
+          A target address that looks like an arbitrary large number — nothing recognizable — usually
+          means a corrupted pointer. The pointer variable itself has been overwritten with garbage,
+          either by a buffer overflow in a nearby variable, a race condition writing to the pointer
+          location, or a stack corruption propagating from a previous function.
+        </p>
+
+        <h2>Using the register state</h2>
+
+        <p>
+          The CPU registers captured at crash time can help identify which variable or argument
+          was the bad pointer. On x64 Windows, function arguments are passed in specific registers:
+          <code>RCX</code> (first argument), <code>RDX</code> (second), <code>R8</code> (third),
+          <code>R9</code> (fourth). If the crash is in a function entry or early in a function body,
+          the argument registers may still hold their call-site values.
+        </p>
+
+        <p>
+          Look at <code>RAX</code> specifically — on x64, <code>RAX</code> is the most commonly
+          used accumulator and is often the register that holds the pointer being dereferenced.
+          If <code>RAX</code> is <code>0x0</code> and the faulting instruction is
+          <code>mov rcx, [rax+18h]</code>, that's a null pointer at <code>rax</code>. If
+          <code>RAX</code> is <code>0xDDDDDDDD</code>, it's a freed pointer.
+        </p>
+
+        <h2>Stack trace patterns for each cause</h2>
+
+        <p>
+          The stack frame that owns the fault address is the most important frame — it's where
+          execution was at the moment of the crash. But the frames above it tell you how you
+          got there, which is often equally important:
+        </p>
+
+        <ul>
+          <li><strong>Null pointer dereference</strong> — the fault frame is typically deep inside a method on a class that should have been checked before use. Look one or two frames up from the fault for the call site that passed the bad pointer in.</li>
+          <li><strong>Use-after-free</strong> — the fault frame may be in a destructor or in code that runs during cleanup. Look for a pattern where the same object is being accessed from multiple code paths, one of which frees it.</li>
+          <li><strong>Buffer overflow</strong> — the fault frame is often in unrelated code that happens to be adjacent in memory. The actual corruption happened earlier. Look for array writes without bounds checks near the crash timeline in the log.</li>
+          <li><strong>Stack corruption</strong> — the stack itself is damaged. Stack overflow (<code>0xC00000FD</code>) is a separate exception code, but a corrupted stack can manifest as an access violation if the return address or a stack variable is overwritten. The stack trace may be truncated or nonsensical above a certain frame.</li>
+        </ul>
+
+        <h2>Intel Engine classification</h2>
+
+        <p>
+          CrashCatch's Intel Engine classifies <code>0xC0000005</code> automatically using the
+          target address, access type, register values, and stack shape. A null pointer at
+          <code>0x0</code> with a read violation and a matching register state gets classified
+          as <em>Null Pointer Dereference</em> with high confidence. A randomized target address
+          combined with a write violation and suspicious register patterns gets classified as
+          <em>Memory Corruption</em>. You still need to do the debugging — but having the
+          classification and the evidence list saves you the first ten minutes of every investigation.
+        </p>
+
+        <div class="post-cta">
+          <div class="post-cta-text">
+            <h4>Classify your access violations automatically.</h4>
+            <p>Intel Engine runs on every crash dump — no API key, no internet required.</p>
+          </div>
+          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
+        </div>
+
+        <div class="post-nav">
+          <div class="post-nav-label">More from the blog</div>
+          <a href="blog.html">Why C++ Crash Dumps Are Still Unreadable</a>
+          <a href="blog-minidump.html">How to Read a Windows Minidump File (Without WinDbg)</a>
+          <a href="blog-ue-crash.html">Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
