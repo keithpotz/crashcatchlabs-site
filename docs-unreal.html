@@ -62,9 +62,9 @@
           <div class="prose">
 
             <h2>UE crash folders vs plain .dmp files</h2>
-            <p>When Unreal Engine crashes, it writes a crash folder — not just a single <code>.dmp</code> file. A typical UE crash folder contains:</p>
+            <p>When Unreal Engine crashes, it writes a crash folder  not just a single <code>.dmp</code> file. A typical UE crash folder contains:</p>
             <ul>
-              <li><code>UE4Minidump.dmp</code> or <code>UE5Minidump.dmp</code> — the Windows minidump</li>
+              <li><code>UE4Minidump.dmp</code> or <code>UE5Minidump.dmp</code>  the Windows minidump</li>
               <li><code>CrashContext.runtime-xml</code> engine metadata captured at the time of the crash</li>
               <li>Log files and other diagnostics</li>
             </ul>
@@ -112,8 +112,8 @@
             <h2>UE exception codes</h2>
             <p>CrashCatch recognizes the Unreal Engine specific exception codes that UE raises for non-crash events it captures as crashes:</p>
             <ul>
-              <li><code>0xE0000001</code> — <code>UnrealFatalError</code> — a <code>UE_LOG(Fatal)</code> or <code>check()</code> failure</li>
-              <li><code>0xE0000002</code> — <code>UnrealEnsure</code> — an <code>ensure()</code> condition that evaluated to false</li>
+              <li><code>0xE0000001</code> — <code>UnrealFatalError</code>  a <code>UE_LOG(Fatal)</code> or <code>check()</code> failure</li>
+              <li><code>0xE0000002</code> — <code>UnrealEnsure</code>  an <code>ensure()</code> condition that evaluated to false</li>
             </ul>
             <p>These will appear decoded in the <strong>Exception</strong> tab rather than as raw hex codes.</p>
 
