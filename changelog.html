@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Changelog — CrashCatch</title>
-  <meta name="description" content="CrashCatch changelog: development updates, release notes, and feature announcements for the Windows crash intelligence platform. Subscribe to be notified of beta launch and new releases.">
+  <meta name="description" content="CrashCatch release notes. v0.2.0-beta: symbolicated stack traces, Intel Engine heuristics, Explain Mode, Unreal Engine crash folder support, and PDF export.">
   <meta property="og:title" content="Changelog — CrashCatch">
-  <meta property="og:description" content="CrashCatch changelog. No releases yet — subscribe to be notified when we ship.">
+  <meta property="og:description" content="CrashCatch release notes. v0.2.0-beta now available — symbolication, Intel Engine, Explain Mode, Unreal Engine support, and PDF export.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://crashcatchlabs.com/changelog.html">
   <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
@@ -15,6 +15,83 @@
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="canonical" href="https://crashcatchlabs.com/changelog.html">
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .changelog-entry {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-entry:last-child {
+      border-bottom: none;
+    }
+    .changelog-version-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .changelog-version {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      font-family: var(--font-mono);
+    }
+    .changelog-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .changelog-date {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+    .changelog-section {
+      margin-top: 24px;
+    }
+    .changelog-section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+    .changelog-section ul {
+      margin: 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .changelog-section li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .changelog-section li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .changelog-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+    }
+    @media (max-width: 600px) {
+      .changelog-date { margin-left: 0; }
+      .changelog-version-row { gap: 10px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -34,30 +111,69 @@
     </div>
   </nav>
 
-  <div class="coming-soon">
-    <div class="coming-soon-inner">
-      <div class="coming-soon-icon">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <path d="M14 5V14L19 17" stroke="#3b9dff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="14" cy="14" r="10" stroke="#3b9dff" stroke-width="1.6"/>
-        </svg>
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Product</div>
+        <h1>Changelog</h1>
+        <p>Release notes for CrashCatch Analyze and the CrashCatch Runtime.</p>
       </div>
-      <div class="section-label">Product</div>
-      <h1>Changelog</h1>
-      <p class="coming-soon-sub">
-        We're still building. The first entry in this changelog will be the beta launch.
-        Subscribe below and you'll be the first to know when we ship including what's in each release.
-      </p>
-
-      <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
-      <p class="mc-form-note" style="margin-top:12px">One email per release. Unsubscribe anytime.</p>
-
-      <p style="margin-top:32px; font-size:0.85rem; color:var(--text-dim);">
-        You can also watch the <a href="https://github.com/crashcatchlabs" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">GitHub repository</a>
-        for development progress in the meantime.
-      </p>
     </div>
   </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="changelog-entry">
+          <div class="changelog-version-row">
+            <span class="changelog-version">v0.2.0</span>
+            <span class="changelog-badge">Beta</span>
+            <span class="changelog-date">March 2026</span>
+          </div>
+
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;">
+            First public beta release of CrashCatch Analyze — the Windows-native desktop crash analyzer
+            for C++ and Unreal Engine developers. Windows x64 only. Unsigned installer: expect a
+            SmartScreen prompt on first launch.
+          </p>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">New</div>
+            <ul>
+              <li><strong>Symbolicated stack traces</strong> — full function names, source files, and line numbers via DbgHelp and the DIA SDK. Resolves every frame against your PDB files.</li>
+              <li><strong>Intel Engine</strong> — offline heuristic crash classification. No API key or internet connection required. Produces a structured finding: classification, confidence score, evidence indicators, and secondary findings.</li>
+              <li><strong>Explain Mode</strong> — plain-English root cause analysis powered by Claude AI. Requires an Anthropic API key. Output includes root cause summary, supporting evidence, and a suggested fix.</li>
+              <li><strong>Unreal Engine crash folder support</strong> — open a UE crash folder directly (<kbd>Ctrl+Shift+O</kbd>) to load the minidump alongside <code>CrashContext.runtime-xml</code>. Surfaces engine version, build configuration, crash type, hardware info, and the engine's own call stack.</li>
+              <li><strong>UE exception code decoding</strong> — <code>0xE0000001</code> (UnrealFatalError) and <code>0xE0000002</code> (UnrealEnsure) decoded automatically in the Exception tab.</li>
+              <li><strong>All crash tabs</strong> — Stack Trace, Threads, Modules, Exception, Registers, System, Intel, Explain Mode, Raw JSON.</li>
+              <li><strong>PDF export</strong> — export the full crash report as a PDF (<kbd>Ctrl+P</kbd>), including Intel findings and AI explanation if available.</li>
+              <li><strong>Drag-and-drop</strong> — drop a <code>.dmp</code> file directly onto the window to open it.</li>
+              <li><strong>Symbol path configuration</strong> — set local symbol search paths via the Symbol Paths dialog.</li>
+              <li><strong>Auto-explain preference</strong> — optionally run Explain Mode automatically whenever a file is loaded.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Known Limitations</div>
+            <ul>
+              <li><strong>Windows x64 only</strong> — analysis of 32-bit minidumps is not yet supported.</li>
+              <li><strong>License activation not yet implemented</strong> — all features are available without activation during beta.</li>
+              <li><strong>Symbol server auto-discovery not yet implemented</strong> — symbol paths must be configured manually.</li>
+              <li><strong>Cloud features not yet available</strong> — crash upload, team dashboard, and aggregation are coming in a future release.</li>
+              <li><strong>Unsigned installer</strong> — Windows SmartScreen will warn on first launch. Click "More info" then "Run anyway" to proceed.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-download">
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v0.2.0-beta</a>
+            <a href="docs-quickstart.html" style="font-size:0.875rem;color:var(--accent);">Quickstart guide →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
 
   <footer class="footer">
     <div class="container footer-inner">
