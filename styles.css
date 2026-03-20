@@ -334,7 +334,7 @@ code, pre {
 .video-wrapper {
   position: relative;
   width: 100%;
-  max-width: 860px;
+  max-width: 1100px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
   border-radius: 12px;
