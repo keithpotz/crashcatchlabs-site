@@ -1313,7 +1313,9 @@ code, pre {
 
 .compare-table thead th.col-us {
   color: var(--accent);
-  background: var(--accent-dim);
+  background: rgba(59, 157, 255, 0.15);
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
 }
 
 .compare-table tbody tr {
@@ -1336,9 +1338,15 @@ code, pre {
 }
 
 .compare-table tbody td.col-us {
-  background: rgba(59, 157, 255, 0.04);
+  background: rgba(59, 157, 255, 0.08);
   color: var(--text);
   font-weight: 600;
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+
+.compare-table tbody tr:last-child td.col-us {
+  border-bottom: 2px solid var(--accent);
 }
 
 .compare-check { color: var(--green); font-weight: 700; }
