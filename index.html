@@ -161,6 +161,91 @@
     </div>
   </section>
 
+  <!-- ── Compare Section ── -->
+  <section class="section compare-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">How We Compare</div>
+        <h2>CrashCatch vs the alternatives.</h2>
+        <p class="section-sub">Built for native C++ from day one, not retrofitted from a web-first tool.</p>
+      </div>
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="width:30%">Feature</th>
+              <th class="col-us">CrashCatch</th>
+              <th>Sentry</th>
+              <th>WinDbg</th>
+              <th>Backtrace</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-feature">Built for native C++</td>
+              <td class="col-us"><span class="compare-check">✓</span> First-class</td>
+              <td><span class="compare-partial">~</span> Secondary</td>
+              <td><span class="compare-check">✓</span> Yes</td>
+              <td><span class="compare-partial">~</span> Partial</td>
+            </tr>
+            <tr>
+              <td class="col-feature">Unreal Engine support</td>
+              <td class="col-us"><span class="compare-check">✓</span> Built in</td>
+              <td><span class="compare-cross">✗</span> Manual setup</td>
+              <td><span class="compare-cross">✗</span> No</td>
+              <td><span class="compare-partial">~</span> Limited</td>
+            </tr>
+            <tr>
+              <td class="col-feature">Offline / local analysis</td>
+              <td class="col-us"><span class="compare-check">✓</span> Fully offline</td>
+              <td><span class="compare-cross">✗</span> Cloud only</td>
+              <td><span class="compare-check">✓</span> Yes</td>
+              <td><span class="compare-cross">✗</span> Cloud only</td>
+            </tr>
+            <tr>
+              <td class="col-feature">Data stays on your machine</td>
+              <td class="col-us"><span class="compare-check">✓</span> Always</td>
+              <td><span class="compare-cross">✗</span> Uploaded</td>
+              <td><span class="compare-check">✓</span> Yes</td>
+              <td><span class="compare-cross">✗</span> Uploaded</td>
+            </tr>
+            <tr>
+              <td class="col-feature">AI crash explanation</td>
+              <td class="col-us"><span class="compare-check">✓</span> One click</td>
+              <td><span class="compare-cross">✗</span> No</td>
+              <td><span class="compare-cross">✗</span> No</td>
+              <td><span class="compare-cross">✗</span> No</td>
+            </tr>
+            <tr>
+              <td class="col-feature">SDK setup</td>
+              <td class="col-us"><span class="compare-check">✓</span> One line of code</td>
+              <td><span class="compare-partial">~</span> SDK + DSN config</td>
+              <td>N/A</td>
+              <td><span class="compare-partial">~</span> SDK + agent</td>
+            </tr>
+            <tr>
+              <td class="col-feature">Open source SDK</td>
+              <td class="col-us"><span class="compare-check">✓</span> Apache 2.0</td>
+              <td><span class="compare-partial">~</span> Partial</td>
+              <td>N/A</td>
+              <td><span class="compare-cross">✗</span> Proprietary</td>
+            </tr>
+            <tr>
+              <td class="col-feature">Pricing</td>
+              <td class="col-us"><span class="compare-check">✓</span> $150 one-time</td>
+              <td><span class="compare-cross">✗</span> $26/mo minimum</td>
+              <td><span class="compare-check">✓</span> Free</td>
+              <td><span class="compare-cross">✗</span> $200+/mo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="compare-cta">
+        <a href="why-crashcatch.html" class="btn btn-ghost">Why we built CrashCatch &rarr;</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Section 1: Built For ── -->
   <section class="section built-for" id="features">
     <div class="container">
@@ -634,6 +719,7 @@ Stack:
           <h5>Company</h5>
           <ul>
             <li><a href="about.html">About</a></li>
+            <li><a href="why-crashcatch.html">Why CrashCatch</a></li>
             <li><a href="blog-index.html">Blog</a></li>
             <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
             <li><a href="security.html">Security</a></li>

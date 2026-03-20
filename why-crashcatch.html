@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why CrashCatch — Built for C++ and Unreal Engine Developers</title>
+  <meta name="description" content="Most crash tools were built for web and mobile then stretched to cover C++. CrashCatch was built for native C++ and Unreal Engine from day one. See how we compare.">
+  <meta property="og:title" content="Why CrashCatch — Built for C++ and Unreal Engine Developers">
+  <meta property="og:description" content="Built for native C++ from day one, not retrofitted from a web-first tool. See how CrashCatch compares to Sentry, WinDbg, and Backtrace.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://crashcatchlabs.com/why-crashcatch.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/why-crashcatch.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="blog-index.html">Blog</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Why CrashCatch</div>
+        <h1>Built for C++ developers.<br>Not bolted on.</h1>
+        <p>Most crash tools were built for web and mobile, then stretched to cover C++. CrashCatch was built for native C++ from day one.</p>
+      </div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- The Problem -->
+    <div class="why-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">The Problem</div>
+          <h2>Crash analysis is broken<br>for C++ developers.</h2>
+          <p class="section-sub">You get a <code>.dmp</code> file. Your user is gone. Your options are WinDbg, a $200 per month SaaS, or nothing.</p>
+        </div>
+        <div class="pain-cards">
+          <div class="pain-card">
+            <div class="pain-card-icon">🔧</div>
+            <h4>WinDbg is a full-time job</h4>
+            <p>Symbol servers, extensions, arcane commands. A tool built for OS engineers, not game developers or app teams shipping on a deadline.</p>
+          </div>
+          <div class="pain-card">
+            <div class="pain-card-icon">☁️</div>
+            <h4>SaaS tools send your data away</h4>
+            <p>Game studios, defense contractors, and enterprise teams often cannot ship crash data to third-party servers. Most tools give no choice.</p>
+          </div>
+          <div class="pain-card">
+            <div class="pain-card-icon">🌐</div>
+            <h4>Web-first tools treat C++ as an afterthought</h4>
+            <p>Sentry, Datadog, Rollbar — great for JavaScript. Painful to configure for native Windows apps and Unreal Engine projects.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="why-section" style="background: var(--bg-surface);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">How We Compare</div>
+          <h2>CrashCatch vs the alternatives.</h2>
+          <p class="section-sub">A straight comparison across the features that matter to C++ and Unreal Engine teams.</p>
+        </div>
+        <div class="compare-table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="width:30%">Feature</th>
+                <th class="col-us">CrashCatch</th>
+                <th>Sentry</th>
+                <th>WinDbg</th>
+                <th>Backtrace</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-feature">Built for native C++</td>
+                <td class="col-us"><span class="compare-check">✓</span> First-class</td>
+                <td><span class="compare-partial">~</span> Secondary</td>
+                <td><span class="compare-check">✓</span> Yes</td>
+                <td><span class="compare-partial">~</span> Partial</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Unreal Engine support</td>
+                <td class="col-us"><span class="compare-check">✓</span> Built in</td>
+                <td><span class="compare-cross">✗</span> Manual setup</td>
+                <td><span class="compare-cross">✗</span> No</td>
+                <td><span class="compare-partial">~</span> Limited</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Offline / local analysis</td>
+                <td class="col-us"><span class="compare-check">✓</span> Fully offline</td>
+                <td><span class="compare-cross">✗</span> Cloud only</td>
+                <td><span class="compare-check">✓</span> Yes</td>
+                <td><span class="compare-cross">✗</span> Cloud only</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Data stays on your machine</td>
+                <td class="col-us"><span class="compare-check">✓</span> Always</td>
+                <td><span class="compare-cross">✗</span> Uploaded</td>
+                <td><span class="compare-check">✓</span> Yes</td>
+                <td><span class="compare-cross">✗</span> Uploaded</td>
+              </tr>
+              <tr>
+                <td class="col-feature">AI crash explanation</td>
+                <td class="col-us"><span class="compare-check">✓</span> One click</td>
+                <td><span class="compare-cross">✗</span> No</td>
+                <td><span class="compare-cross">✗</span> No</td>
+                <td><span class="compare-cross">✗</span> No</td>
+              </tr>
+              <tr>
+                <td class="col-feature">SDK setup</td>
+                <td class="col-us"><span class="compare-check">✓</span> One line of code</td>
+                <td><span class="compare-partial">~</span> SDK + DSN config</td>
+                <td>N/A</td>
+                <td><span class="compare-partial">~</span> SDK + agent</td>
+              </tr>
+              <tr>
+                <td class="col-feature">SDK dependencies</td>
+                <td class="col-us"><span class="compare-check">✓</span> Zero (header only)</td>
+                <td><span class="compare-cross">✗</span> Heavy SDK</td>
+                <td>N/A</td>
+                <td><span class="compare-cross">✗</span> Heavy SDK</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Open source SDK</td>
+                <td class="col-us"><span class="compare-check">✓</span> Apache 2.0</td>
+                <td><span class="compare-partial">~</span> Partial</td>
+                <td>N/A</td>
+                <td><span class="compare-cross">✗</span> Proprietary</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Pricing</td>
+                <td class="col-us"><span class="compare-check">✓</span> $150 one-time</td>
+                <td><span class="compare-cross">✗</span> $26/mo minimum</td>
+                <td><span class="compare-check">✓</span> Free</td>
+                <td><span class="compare-cross">✗</span> $200+/mo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Four Pillars -->
+    <div class="why-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Our Approach</div>
+          <h2>Four things we refuse<br>to compromise on.</h2>
+          <p class="section-sub">These are not marketing bullets. They are hard constraints that shaped every decision in the product.</p>
+        </div>
+        <div class="pillar-cards">
+          <div class="pillar-card accent-green">
+            <div class="pillar-card-icon">🔒</div>
+            <h4>Your data stays yours</h4>
+            <p>CrashCatch Analyze runs entirely on your machine. Crash dumps never leave your environment unless you choose to share them. No telemetry. No cloud upload. No exceptions.</p>
+          </div>
+          <div class="pillar-card accent-orange">
+            <div class="pillar-card-icon">⚡</div>
+            <h4>Zero friction setup</h4>
+            <p>One header file. One line of code. No build system changes, no dependency managers, no symbol server configuration on day one. You should be capturing crashes in under five minutes.</p>
+          </div>
+          <div class="pillar-card accent-purple">
+            <div class="pillar-card-icon">🤖</div>
+            <h4>AI that actually understands C++</h4>
+            <p>Explain Mode does not just decode the exception code. It reads the full stack trace, Intel findings, and crash context before telling you what went wrong and how to fix it.</p>
+          </div>
+          <div class="pillar-card accent-blue">
+            <div class="pillar-card-icon">🎮</div>
+            <h4>Unreal Engine is a first-class citizen</h4>
+            <p>Auto-detect UE projects from the module list. Classify Blueprint vs. native frames. Understand GC crashes, async asset loading failures, and physics thread faults out of the box.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Who It Is For -->
+    <div class="why-section" style="background: var(--bg-surface);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Who It Is For</div>
+          <h2>Made for teams who ship<br>native C++ software.</h2>
+          <p class="section-sub">If you are building on Windows in C++ or Unreal Engine, CrashCatch was built for you.</p>
+        </div>
+        <div class="audience-cards">
+          <div class="audience-card">
+            <div class="audience-tag">Game Dev</div>
+            <h4>Indie and AA Studios</h4>
+            <p>Shipping on Steam or Epic? Get a symbolicated stack trace and AI root cause from any player crash dump without a backend, a devops team, or a monthly bill.</p>
+          </div>
+          <div class="audience-card">
+            <div class="audience-tag">Enterprise</div>
+            <h4>Teams with data compliance requirements</h4>
+            <p>Defense, finance, and medical software teams can analyze crashes without ever sending a dump outside the building. Full analysis, fully air-gapped.</p>
+          </div>
+          <div class="audience-card">
+            <div class="audience-tag">Tools and Engines</div>
+            <h4>Native Windows app developers</h4>
+            <p>Shipping a DCC tool, engine plugin, or systems software on Windows? CrashCatch integrates in minutes and gives you production-quality crash reporting from day one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="why-cta">
+      <h2>Stop flying blind.</h2>
+      <p>Download CrashCatch Analyze free during beta. No license required.</p>
+      <div class="why-cta-buttons">
+        <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
+        <a href="https://github.com/keithpotz/CrashCatch" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">View on GitHub &rarr;</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog-index.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
