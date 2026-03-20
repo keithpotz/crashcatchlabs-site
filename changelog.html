@@ -133,7 +133,7 @@
           </div>
 
           <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;">
-            First public beta release of CrashCatch Analyze — the Windows-native desktop crash analyzer
+            First public beta release of CrashCatch Analyze the Windows-native desktop crash analyzer
             for C++ and Unreal Engine developers. Windows x64 only. Unsigned installer: expect a
             SmartScreen prompt on first launch.
           </p>
@@ -141,27 +141,27 @@
           <div class="changelog-section">
             <div class="changelog-section-label">New</div>
             <ul>
-              <li><strong>Symbolicated stack traces</strong> — full function names, source files, and line numbers via DbgHelp and the DIA SDK. Resolves every frame against your PDB files.</li>
-              <li><strong>Intel Engine</strong> — offline heuristic crash classification. No API key or internet connection required. Produces a structured finding: classification, confidence score, evidence indicators, and secondary findings.</li>
-              <li><strong>Explain Mode</strong> — plain-English root cause analysis powered by Claude AI. Requires an Anthropic API key. Output includes root cause summary, supporting evidence, and a suggested fix.</li>
-              <li><strong>Unreal Engine crash folder support</strong> — open a UE crash folder directly (<kbd>Ctrl+Shift+O</kbd>) to load the minidump alongside <code>CrashContext.runtime-xml</code>. Surfaces engine version, build configuration, crash type, hardware info, and the engine's own call stack.</li>
-              <li><strong>UE exception code decoding</strong> — <code>0xE0000001</code> (UnrealFatalError) and <code>0xE0000002</code> (UnrealEnsure) decoded automatically in the Exception tab.</li>
-              <li><strong>All crash tabs</strong> — Stack Trace, Threads, Modules, Exception, Registers, System, Intel, Explain Mode, Raw JSON.</li>
-              <li><strong>PDF export</strong> — export the full crash report as a PDF (<kbd>Ctrl+P</kbd>), including Intel findings and AI explanation if available.</li>
-              <li><strong>Drag-and-drop</strong> — drop a <code>.dmp</code> file directly onto the window to open it.</li>
-              <li><strong>Symbol path configuration</strong> — set local symbol search paths via the Symbol Paths dialog.</li>
-              <li><strong>Auto-explain preference</strong> — optionally run Explain Mode automatically whenever a file is loaded.</li>
+              <li><strong>Symbolicated stack traces</strong> full function names, source files, and line numbers via DbgHelp and the DIA SDK. Resolves every frame against your PDB files.</li>
+              <li><strong>Intel Engine</strong>  offline heuristic crash classification. No API key or internet connection required. Produces a structured finding: classification, confidence score, evidence indicators, and secondary findings.</li>
+              <li><strong>Explain Mode</strong> plain-English root cause analysis powered by Claude AI. Requires an Anthropic API key. Output includes root cause summary, supporting evidence, and a suggested fix.</li>
+              <li><strong>Unreal Engine crash folder support</strong> open a UE crash folder directly (<kbd>Ctrl+Shift+O</kbd>) to load the minidump alongside <code>CrashContext.runtime-xml</code>. Surfaces engine version, build configuration, crash type, hardware info, and the engine's own call stack.</li>
+              <li><strong>UE exception code decoding</strong>  <code>0xE0000001</code> (UnrealFatalError) and <code>0xE0000002</code> (UnrealEnsure) decoded automatically in the Exception tab.</li>
+              <li><strong>All crash tabs</strong> Stack Trace, Threads, Modules, Exception, Registers, System, Intel, Explain Mode, Raw JSON.</li>
+              <li><strong>PDF export</strong> export the full crash report as a PDF (<kbd>Ctrl+P</kbd>), including Intel findings and AI explanation if available.</li>
+              <li><strong>Drag-and-drop</strong> drop a <code>.dmp</code> file directly onto the window to open it.</li>
+              <li><strong>Symbol path configuration</strong> set local symbol search paths via the Symbol Paths dialog.</li>
+              <li><strong>Auto-explain preference</strong> optionally run Explain Mode automatically whenever a file is loaded.</li>
             </ul>
           </div>
 
           <div class="changelog-section">
             <div class="changelog-section-label">Known Limitations</div>
             <ul>
-              <li><strong>Windows x64 only</strong> — analysis of 32-bit minidumps is not yet supported.</li>
-              <li><strong>License activation not yet implemented</strong> — all features are available without activation during beta.</li>
-              <li><strong>Symbol server auto-discovery not yet implemented</strong> — symbol paths must be configured manually.</li>
-              <li><strong>Cloud features not yet available</strong> — crash upload, team dashboard, and aggregation are coming in a future release.</li>
-              <li><strong>Unsigned installer</strong> — Windows SmartScreen will warn on first launch. Click "More info" then "Run anyway" to proceed.</li>
+              <li><strong>Windows x64 only</strong> analysis of 32-bit minidumps is not yet supported.</li>
+              <li><strong>License activation not yet implemented</strong> all features are available without activation during beta.</li>
+              <li><strong>Symbol server auto-discovery not yet implemented</strong> symbol paths must be configured manually.</li>
+              <li><strong>Cloud features not yet available</strong> crash upload, team dashboard, and aggregation are coming in a future release.</li>
+              <li><strong>Unsigned installer</strong> Windows SmartScreen will warn on first launch. Click "More info" then "Run anyway" to proceed.</li>
             </ul>
           </div>
 
