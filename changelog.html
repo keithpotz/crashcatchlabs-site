@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Changelog — CrashCatch</title>
-  <meta name="description" content="CrashCatch release notes. v0.2.0-beta: symbolicated stack traces, Intel Engine heuristics, Explain Mode, Unreal Engine crash folder support, and PDF export.">
+  <meta name="description" content="CrashCatch release notes. v0.2.1-beta: batch analysis, crash comparison, folder watcher, GitHub issue export, auto-updater, license activation, and more.">
   <meta property="og:title" content="Changelog — CrashCatch">
-  <meta property="og:description" content="CrashCatch release notes. v0.2.0-beta now available — symbolication, Intel Engine, Explain Mode, Unreal Engine support, and PDF export.">
+  <meta property="og:description" content="CrashCatch release notes. v0.2.1-beta now available — batch analysis, crash comparison, folder watcher, GitHub issue export, and auto-updater.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://crashcatchlabs.com/changelog.html">
   <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
@@ -127,6 +127,83 @@
 
         <div class="changelog-entry">
           <div class="changelog-version-row">
+            <span class="changelog-version">v0.2.1</span>
+            <span class="changelog-badge">Beta</span>
+            <span class="changelog-date">March 2026</span>
+          </div>
+
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;">
+            Major feature release. Batch analysis, crash comparison, folder watcher, GitHub issue export, auto-updater, license key activation, and a large set of productivity and UI improvements. Beta remains free to use until 2026-06-01 with no license key required.
+          </p>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Workflow and Productivity</div>
+            <ul>
+              <li><strong>Batch analysis</strong> analyze an entire folder of <code>.dmp</code> files at once. Results appear in a summary table showing exception, top frame, and timestamp for each file.</li>
+              <li><strong>Crash comparison</strong> diff two dumps side by side with per-frame match indicators to quickly spot what changed between builds.</li>
+              <li><strong>Crash signature deduplication</strong> tracks unique crash signatures across your session and badges the toolbar when duplicates are found.</li>
+              <li><strong>Folder watcher</strong> monitor a crash output folder and automatically analyze new <code>.dmp</code> files the moment they appear.</li>
+              <li><strong>Session history</strong> recent files are remembered across launches with one-click re-open.</li>
+              <li><strong>Frame annotations</strong> add persistent notes to any stack frame, saved per module and function across sessions.</li>
+              <li><strong>Per-dump notes</strong> attach free-form notes to individual dump files, included in all exports.</li>
+              <li><strong>Missing PDB report</strong> one-click list of every module with unresolved symbols so you know exactly what to fix.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Export and Sharing</div>
+            <ul>
+              <li><strong>Copy as Markdown</strong> copy the full crash report as formatted Markdown ready to paste into GitHub, Notion, or Jira.</li>
+              <li><strong>GitHub issue button</strong> create a pre-filled GitHub issue directly from a crash report. Requires a personal access token and target repo configured in Settings.</li>
+              <li><strong>Settings export and import</strong> back up and restore symbol paths, API keys, and preferences as a JSON file.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Intel Engine Improvements</div>
+            <ul>
+              <li><strong>Thread deadlock detection</strong> flags threads blocked in known wait functions and surfaces them in findings.</li>
+              <li><strong>Register near-null highlighting</strong> values under <code>0x10000</code> are flagged alongside zero-value detection for more precise pointer analysis.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">UI and Polish</div>
+            <ul>
+              <li><strong>Ctrl+F search</strong> full-text search across the rendered report with match highlighting and next/prev navigation.</li>
+              <li><strong>Drag-to-reorder symbol paths</strong> drag rows in Settings to reorder your symbol search paths without retyping.</li>
+              <li><strong>System tray</strong> minimizes to tray on close. Left-click to show/hide, right-click for menu.</li>
+              <li><strong>Contextual help tooltips</strong> inline help throughout the UI explains each control and field.</li>
+              <li><strong>Keyboard shortcuts</strong> full keyboard navigation across all tabs and panels. See Help menu for the complete list.</li>
+              <li><strong>Auto-updater</strong> checks for updates at launch and prompts to install when a new version is available.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Licensing</div>
+            <ul>
+              <li><strong>Beta period extended</strong> free to use without a license key until 2026-06-01.</li>
+              <li><strong>License key activation</strong> INDIE and TEAM tier keys are now supported with offline verification and no phone-home.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Known Limitations</div>
+            <ul>
+              <li><strong>Windows x64 only</strong> no ARM64 support yet.</li>
+              <li><strong>Installer is unsigned</strong> Windows SmartScreen will warn on first run. Click "More info" then "Run anyway".</li>
+              <li><strong>Explain Mode and Engineer Mode require an internet connection</strong> all other features work fully offline.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-download">
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v0.2.1-beta</a>
+            <a href="docs-quickstart.html" style="font-size:0.875rem;color:var(--accent);">Quickstart guide &rarr;</a>
+          </div>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version-row">
             <span class="changelog-version">v0.2.0</span>
             <span class="changelog-badge">Beta</span>
             <span class="changelog-date">March 2026</span>
@@ -166,8 +243,7 @@
           </div>
 
           <div class="changelog-download">
-            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v0.2.0-beta</a>
-            <a href="docs-quickstart.html" style="font-size:0.875rem;color:var(--accent);">Quickstart guide →</a>
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View v0.2.0-beta on GitHub</a>
           </div>
         </div>
 

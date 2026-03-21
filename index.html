@@ -80,7 +80,7 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container hero-inner">
       <div class="hero-text">
-        <div class="hero-badge">In Development · Windows-first · Open-Core</div>
+        <div class="hero-badge">v0.2.1-beta · Windows-first · Open-Core</div>
         <h1>Understand Your<br>C++ Crashes.</h1>
         <p class="hero-sub">Windows-first crash intelligence for Unreal Engine and native C++ applications.</p>
         <p class="hero-support">Stop reading raw stack traces. Start understanding root causes.</p>
@@ -410,28 +410,35 @@ Stack:
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
               <strong>Register inspection</strong>
-              <span>RAX, RBX, RCX... full CPU state at fault</span>
+              <span>RAX, RBX, RCX... full CPU state at fault with near-null highlighting</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Module mapping</strong>
-              <span>Every loaded DLL, version, load address, and PDB match status</span>
+              <strong>Batch analysis</strong>
+              <span>Analyze an entire folder of dumps at once, results in a summary table</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Symbol resolution diagnostics</strong>
-              <span>Know exactly which frames are symbolicated and why others aren't</span>
+              <strong>Crash comparison</strong>
+              <span>Diff two dumps side by side with per-frame match indicators</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>JSON export</strong>
-              <span>Full structured output — pipe it anywhere, diff across builds</span>
+              <strong>Folder watcher</strong>
+              <span>Auto-analyze new dumps the moment they appear in your crash output folder</span>
+            </div>
+          </li>
+          <li>
+            <span class="eng-icon" aria-hidden="true">⟶</span>
+            <div>
+              <strong>Export anywhere</strong>
+              <span>PDF, Markdown, GitHub issue, or raw JSON — share crash reports in one click</span>
             </div>
           </li>
         </ul>
