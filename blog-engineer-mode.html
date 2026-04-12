@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Crash Dump to Fix Plan: How Engineer Mode Works — CrashCatch Blog</title>
+  <meta name="description" content="Most crash tools stop at analysis. Engineer Mode goes further: it generates hypotheses, exact WinDbg commands, source search patterns, a fix checklist, and a blast radius assessment from the crash data itself.">
+  <meta property="og:title" content="From Crash Dump to Fix Plan: How Engineer Mode Works — CrashCatch Blog">
+  <meta property="og:description" content="Most crash tools stop at analysis. Engineer Mode generates a complete debug session plan from the crash dump using a deterministic Rust engine. No AI, no API key, instant.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-engineer-mode.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-engineer-mode.html">
+  <meta property="article:published_time" content="2026-04-12T00:00:00Z">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="Windows">
+  <meta property="article:tag" content="crash analysis">
+  <meta property="article:tag" content="debugging">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "From Crash Dump to Fix Plan: How Engineer Mode Works",
+    "description": "Most crash tools stop at analysis. Engineer Mode goes further: it generates hypotheses, exact WinDbg commands, source search patterns, a fix checklist, and a blast radius assessment from the crash data itself.",
+    "url": "https://crashcatchlabs.com/blog-engineer-mode.html",
+    "datePublished": "2026-04-12",
+    "dateModified": "2026-04-12",
+    "author": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "url": "https://crashcatchlabs.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://crashcatchlabs.com/logo.svg"
+      }
+    },
+    "image": "https://crashcatchlabs.com/og-image.png",
+    "keywords": "crash dump analysis, WinDbg, C++ debugging, crash debugging workflow, Windows crash dump, engineer mode, crash hypothesis"
+  }
+  </script>
+
+  <style>
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .post-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .post-cta {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .post-cta-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .post-cta-text p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .post-nav-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .post-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .post-nav a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .post-meta { gap: 10px; }
+      .post-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="blog-index.html">Blog</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">CrashCatch Labs Blog</div>
+        <h1>From Crash Dump to Fix Plan: How Engineer Mode Works</h1>
+        <p>Most crash tools stop at analysis. Engineer Mode generates a complete debug session plan from the crash data itself. No AI, no API key, instant results.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="prose">
+
+        <div class="post-meta">
+          <span>April 12, 2026</span>
+          <span>·</span>
+          <span>7 min read</span>
+          <span>·</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+          <span class="post-tag">Debugging</span>
+        </div>
+
+        <p>
+          Drop a crash dump into CrashCatch and within seconds you have a symbolicated stack trace,
+          an exception classification from the Intel Engine, and optionally a plain-English
+          explanation from Explain Mode. That's all useful. But there's a gap between "here's what
+          crashed" and "here's what to do about it." Bridging that gap is what Engineer Mode is for.
+        </p>
+
+        <p>
+          Engineer Mode ships in v0.3.0-beta as a dedicated tab (<code>Ctrl+0</code>). It takes
+          the crash data from the open dump and generates a structured debug session plan: competing
+          hypotheses ranked by confidence, exact WinDbg commands with real values from the dump,
+          search patterns for your source code, reproduction conditions, a context-aware fix
+          checklist, and a blast radius assessment. Everything runs offline in a deterministic
+          Rust engine. No API key, no network round trip, instant results.
+        </p>
+
+        <h2>The gap between knowing and fixing</h2>
+
+        <p>
+          Most crash analysis tools answer the question "what happened?" They show you the exception
+          code, the faulting frame, the register state, and maybe a classification. That's the
+          starting point for debugging, not the end of it. What a senior engineer does next is:
+        </p>
+
+        <ul>
+          <li>Form competing theories about root cause</li>
+          <li>Decide which theory is most likely given the evidence in the dump</li>
+          <li>Write the WinDbg commands needed to test each theory</li>
+          <li>Identify which files and functions in their codebase to search first</li>
+          <li>Assess whether the crash is a one-liner fix or a deeper structural problem</li>
+        </ul>
+
+        <p>
+          Junior engineers either skip these steps and guess, or spend an hour reading WinDbg
+          documentation to figure out which commands to run. Engineer Mode codifies what experienced
+          C++ engineers do instinctively and hands it back as a structured plan specific to the
+          crash in front of you.
+        </p>
+
+        <h2>What Engineer Mode generates</h2>
+
+        <h3>Hypotheses</h3>
+
+        <p>
+          For any crash, there are usually several plausible root causes. A
+          <code>0xC0000005</code> access violation, for example, could be a null pointer
+          dereference, a use-after-free, or a buffer overflow. Engineer Mode generates all
+          plausible hypotheses for the crash class, ranks each one by confidence (0-100%), and
+          lists the supporting and contradicting evidence for each.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Engineer Mode — hypotheses</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-divider">─── HYPOTHESES ───────────────────────────────────────</span>
+<span class="c-bullet">●</span> <span class="c-red">[HIGH 91%]  Null Pointer Dereference</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">RAX = 0x0 — null pointer in accumulator register</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">Access violation target address: 0x0</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">Fault in AEnemy::Tick (user module, not system)</span>
+  <span class="c-muted">✗  No deallocation function found in crashing stack</span>
+  <span class="c-muted">   Confirm: dt AEnemy @rcx</span>
+
+<span class="c-bullet">●</span> <span class="c-yellow">[LOW 9%]    Use-After-Free</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">Access violation on read operation</span>
+  <span class="c-muted">✗  Target address 0x0 — not a heap-range address</span>
+  <span class="c-muted">✗  No deallocation frame in crashing stack</span>
+  <span class="c-muted">   Confirm: !heap -p -a @rax</span></code></pre>
+          </div>
+        </div>
+
+        <p>
+          Each hypothesis includes a <em>how to confirm</em> field: the specific WinDbg command or
+          action that would prove or disprove the theory using the data in this dump.
+        </p>
+
+        <h3>WinDbg plan</h3>
+
+        <p>
+          Generic WinDbg advice is useless. "Run <code>!analyze -v</code>" is in every crash
+          analysis tutorial and tells you nothing new. Engineer Mode generates a step-by-step
+          WinDbg plan using real values from the dump: the actual thread ID to switch to, the
+          actual register holding the suspect pointer, the actual address to inspect in the heap.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Engineer Mode — WinDbg plan</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-divider">─── WINDBG PLAN ──────────────────────────────────────</span>
+<span class="c-label">1</span>  <span class="c-code">!analyze -v</span>
+   <span class="c-muted">Full automated analysis with verbose output</span>
+
+<span class="c-label">2</span>  <span class="c-code">~~[0x1a4c]s; k</span>
+   <span class="c-muted">Switch to crashing thread 0x1a4c, print full stack</span>
+
+<span class="c-label">3</span>  <span class="c-code">dt AEnemy @rcx</span>
+   <span class="c-muted">Inspect AEnemy object at address in RCX register</span>
+
+<span class="c-label">4</span>  <span class="c-code">!heap -p -a 0x0</span>
+   <span class="c-muted">Check heap metadata at the faulting address</span>
+
+<span class="c-label">5</span>  <span class="c-code">!teb</span>
+   <span class="c-muted">Inspect thread environment block for stack limits</span></code></pre>
+          </div>
+        </div>
+
+        <p>
+          The thread ID (<code>0x1a4c</code>) came from the dump. The register name
+          (<code>@rcx</code>) was selected because RCX held a near-null value at the time of the
+          fault and RCX is the first argument register on x64 Windows. The type name
+          (<code>AEnemy</code>) was extracted from the qualified function name
+          <code>AEnemy::Tick</code> in the crashing stack frame.
+        </p>
+
+        <h3>Source search patterns</h3>
+
+        <p>
+          After identifying the likely cause, the next step is finding where in your code to look.
+          Engineer Mode generates grep-compatible patterns based on the type names and function
+          names extracted from the crashing stack. System modules (ntdll, kernel32, ucrtbase, and
+          others) are filtered out so the patterns focus on your actual code.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Engineer Mode — search hints</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-divider">─── SOURCE SEARCH PATTERNS ───────────────────────────</span>
+<span class="c-code">AEnemy</span>
+<span class="c-muted">Type extracted from crashing frame AEnemy::Tick</span>
+
+<span class="c-code">AEnemy\s*\*\s*\w+\s*=</span>
+<span class="c-muted">Find AEnemy pointer declarations — check for null guards</span>
+
+<span class="c-code">IsValid\(.*AEnemy</span>
+<span class="c-muted">Find existing IsValid checks on AEnemy (UE pattern)</span>
+
+<span class="c-code">GetEnemy\|FindEnemy\|SpawnEnemy</span>
+<span class="c-muted">Find factory functions that return AEnemy pointers</span></code></pre>
+          </div>
+        </div>
+
+        <h3>Reproduction conditions</h3>
+
+        <p>
+          Not every crash is straightforward to reproduce. Engineer Mode analyses the thread state
+          and crash context to identify whether the crash is likely timing-dependent (multiple
+          threads involved, crash in concurrent code) or memory-pressure-related (high allocation
+          rate, crash in allocator code). It also produces a plain-language conditions list to
+          guide reproduction attempts.
+        </p>
+
+        <h3>Fix checklist</h3>
+
+        <p>
+          The fix checklist is context-aware. A null pointer dereference in an Unreal Engine
+          project gets different advice than the same crash class in a plain C++ application.
+          In a UE project, the checklist suggests <code>TWeakObjectPtr</code> and
+          <code>IsValid()</code> checks because those are the correct UE-aware patterns.
+          In a non-UE project, it suggests <code>std::weak_ptr</code> and explicit null guards.
+        </p>
+
+        <h3>Blast radius</h3>
+
+        <p>
+          Every crash gets a severity rating (low / medium / high / critical), a scope description,
+          and an impact note. A game thread crash in shipping code is critical. A crash in a
+          background worker during cleanup might be medium. The rating is derived from the thread
+          name, module, exception code, and crash class, not assigned arbitrarily.
+        </p>
+
+        <div class="code-window" style="margin: 24px 0;">
+          <div class="code-window-bar">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="code-window-title">Engineer Mode — blast radius</span>
+          </div>
+          <div class="code-window-body">
+<pre><code><span class="c-divider">─── BLAST RADIUS ─────────────────────────────────────</span>
+<span class="c-label">Severity</span>  <span class="c-red">CRITICAL</span>
+<span class="c-label">Scope</span>     <span class="c-muted">AEnemy::Tick — game thread crash</span>
+<span class="c-label">Note</span>      <span class="c-muted">Game thread crash terminates the process immediately.
+           All users on this build are affected. Ship a fix
+           before the next release.</span></code></pre>
+          </div>
+        </div>
+
+        <h2>Why it's a Rust engine, not AI</h2>
+
+        <p>
+          Engineer Mode was prototyped as an AI call. It was rebuilt as a deterministic Rust
+          engine for three reasons.
+        </p>
+
+        <p>
+          First, everything it generates can be derived directly from the crash data. The WinDbg
+          commands use real values from the dump. The hypothesis confidence scores are calculated
+          from specific signals: register values, exception codes, stack frame names, thread state.
+          No language model reasoning is needed because there's no ambiguity to reason through,
+          just pattern matching on structured data.
+        </p>
+
+        <p>
+          Second, the output needs to be trustworthy at the command level. An AI might generate a
+          plausible-looking WinDbg command with a fabricated address. A Rust engine that reads the
+          actual thread ID from the dump and formats it into the command string will always be
+          correct. When you paste <code>~~[0x1a4c]s</code> into WinDbg, that thread ID came
+          from the dump, not from inference.
+        </p>
+
+        <p>
+          Third, offline and instant matters. Crash debugging is often time-sensitive. Waiting on a
+          network round trip, paying per-use API costs, and requiring an internet connection on
+          air-gapped development machines all add friction. The Rust engine has none of that.
+        </p>
+
+        <h2>Crash classes covered</h2>
+
+        <p>
+          Engineer Mode produces tailored output for 10 crash classes:
+        </p>
+
+        <ul>
+          <li><strong>Null Pointer Dereference</strong> detected via <code>0xC0000005</code> with a null target address</li>
+          <li><strong>Use-After-Free</strong> detected via <code>0xC0000005</code> with a deallocation function in the crashing stack</li>
+          <li><strong>Heap Corruption</strong> detected via <code>0xC0000374</code></li>
+          <li><strong>Stack Overflow</strong> detected via <code>0xC00000FD</code> plus repeated frame heuristic</li>
+          <li><strong>Deadlock</strong> detected when all non-crashing threads are in wait functions</li>
+          <li><strong>Abort / Assert</strong> detected via <code>0x40000015</code></li>
+          <li><strong>Pure Virtual Call</strong> detected via <code>__purecall</code> in the crashing stack</li>
+          <li><strong>Security Cookie / Stack Overrun</strong> detected via <code>0xC0000409</code></li>
+          <li><strong>Out of Memory</strong> detected via <code>0xC0000017</code></li>
+          <li><strong>Access Violation (generic)</strong> fallback for non-null violations that don't match the above patterns</li>
+        </ul>
+
+        <p>
+          For Unreal Engine projects, <code>ensure()</code> failures
+          (<code>FDebug::EnsureFailed</code> in stack) and <code>check()</code> failures
+          (<code>FDebug::CheckVerifyFailed</code> in stack) are detected and layered on top of
+          any base crash class, producing UE-specific guidance alongside the standard output.
+        </p>
+
+        <h2>Using Engineer Mode</h2>
+
+        <p>
+          Open a crash dump in CrashCatch and press <code>Ctrl+0</code>, or click the
+          <strong>Engineer</strong> tab in the tab bar. The report generates immediately with no
+          button press required. If you have multiple dumps open, each gets its own independent
+          report.
+        </p>
+
+        <p>
+          Engineer Mode output is included in the PDF export: hypotheses as cards, the WinDbg
+          plan as a numbered table, search hints, reproduction conditions, the fix checklist as
+          an ordered list, and the blast radius with a color-coded severity badge. You can attach
+          the full report to a GitHub issue or paste it directly into a Jira ticket using the
+          Copy as Markdown button.
+        </p>
+
+        <p>
+          Engineer Mode is available in v0.3.0-beta. The beta is free to download and use
+          through June 1, 2026, no license key required.
+        </p>
+
+        <div class="post-cta">
+          <div class="post-cta-text">
+            <h4>Get a full debug plan from any crash dump.</h4>
+            <p>Engineer Mode ships in v0.3.0-beta. Free to use through June 1, no key required.</p>
+          </div>
+          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v0.3.0-beta</a>
+        </div>
+
+        <div class="post-nav">
+          <a href="blog-index.html" style="font-size:0.82rem;color:var(--text-dim);text-decoration:none;margin-bottom:4px;display:inline-block;">&larr; All posts</a>
+          <div class="post-nav-label">More from the blog</div>
+          <a href="blog-access-violation.html">Access Violation 0xC0000005: What It Means and How to Find the Cause</a>
+          <a href="blog-ue-crash.html">Unreal Engine Crash Analysis: What the Crash Folder Actually Contains</a>
+          <a href="blog-minidump.html">How to Read a Windows Minidump File (Without WinDbg)</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog-index.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -327,10 +327,7 @@ Stack:
         </div>
 
         <p>
-          For power users, <strong>Engineer Mode</strong> surfaces everything: the full CPU register
-          state at the time of the fault, every thread active at crash time, every loaded module with
-          its version and PDB match status. Everything exports to JSON so you can diff crash reports
-          across builds and pipe the output wherever you need it.
+          For senior engineers, <strong>Engineer Mode</strong> goes further. It generates a complete debug session plan from the crash data: competing hypotheses ranked by confidence, exact WinDbg commands built from real thread IDs and register values in the dump, grep patterns targeting your code, a fix checklist, and a blast radius assessment. Everything runs offline using a deterministic Rust engine with no API key and no network round trip.
         </p>
 
         <p>

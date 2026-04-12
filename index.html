@@ -80,7 +80,7 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container hero-inner">
       <div class="hero-text">
-        <div class="hero-badge">v0.2.1-beta · Windows-first · Open-Core</div>
+        <div class="hero-badge">v0.3.0-beta · Windows-first · Open-Core</div>
         <h1>Understand Your<br>C++ Crashes.</h1>
         <p class="hero-sub">Windows-first crash intelligence for Unreal Engine and native C++ applications.</p>
         <p class="hero-support">Stop reading raw stack traces. Start understanding root causes.</p>
@@ -396,49 +396,49 @@ Stack:
     <div class="container engineer-inner">
       <div class="engineer-text">
         <div class="section-label">Engineer Mode</div>
-        <h2>For power users.<br>Nothing hidden.</h2>
-        <p>Senior engineers don't want summaries. Every byte of the crash is accessible raw, structured, and exportable.</p>
+        <h2>From crash dump<br>to fix plan. Instantly.</h2>
+        <p>Engineer Mode generates a complete debug session from the crash data using a deterministic Rust engine. No AI, no API key, no network. Instant.</p>
         <ul class="engineer-list">
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Full thread tree</strong>
-              <span>Every thread at the time of the crash, not just the crashing one</span>
+              <strong>Competing hypotheses</strong>
+              <span>Multiple theories ranked by confidence, each with supporting and contradicting evidence pulled from the dump</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Register inspection</strong>
-              <span>RAX, RBX, RCX... full CPU state at fault with near-null highlighting</span>
+              <strong>Exact WinDbg commands</strong>
+              <span>Real thread IDs, real register values, real addresses from this specific dump, not generic advice</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Batch analysis</strong>
-              <span>Analyze an entire folder of dumps at once, results in a summary table</span>
+              <strong>Source search patterns</strong>
+              <span>Grep-compatible patterns targeting your code with system modules filtered out automatically</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Crash comparison</strong>
-              <span>Diff two dumps side by side with per-frame match indicators</span>
+              <strong>Reproduction conditions</strong>
+              <span>Timing dependencies, memory pressure flags, and conditions extracted from crash state</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Folder watcher</strong>
-              <span>Auto-analyze new dumps the moment they appear in your crash output folder</span>
+              <strong>Context-aware fix checklist</strong>
+              <span>UE-specific suggestions for Unreal projects, standard C++ guidance for everything else</span>
             </div>
           </li>
           <li>
             <span class="eng-icon" aria-hidden="true">⟶</span>
             <div>
-              <strong>Export anywhere</strong>
-              <span>PDF, Markdown, GitHub issue, or raw JSON — share crash reports in one click</span>
+              <strong>Blast radius assessment</strong>
+              <span>Severity rating (low / medium / high / critical), scope, and impact note for every crash</span>
             </div>
           </li>
         </ul>
@@ -449,25 +449,29 @@ Stack:
             <span class="dot dot-r" aria-hidden="true"></span>
             <span class="dot dot-y" aria-hidden="true"></span>
             <span class="dot dot-g" aria-hidden="true"></span>
-            <span class="code-window-title">Engineer Mode — registers + threads</span>
+            <span class="code-window-title">Engineer Mode — hypotheses + WinDbg plan</span>
           </div>
           <div class="code-window-body">
-<pre><code><span class="c-divider">─── REGISTERS ────────────────────────────────</span>
-<span class="c-label">RAX</span> <span class="c-red">0x0000000000000000</span>  <span class="c-label">RBX</span> <span class="c-num">0x00007ff6a4b2c810</span>
-<span class="c-label">RCX</span> <span class="c-num">0x00007ff6a4b2c810</span>  <span class="c-label">RDX</span> <span class="c-num">0x000000b4e7dff2a0</span>
-<span class="c-label">RSI</span> <span class="c-num">0x0000000000000000</span>  <span class="c-label">RDI</span> <span class="c-num">0x000000b4e7dff310</span>
-<span class="c-label">RIP</span> <span class="c-code">0x00007ff6a4b12a34</span>  <span class="c-label">RSP</span> <span class="c-num">0x000000b4e7dff1c0</span>
+<pre><code><span class="c-divider">─── HYPOTHESES ───────────────────────────────</span>
+<span class="c-bullet">●</span> <span class="c-red">[HIGH 91%]  Null Pointer Dereference</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">RAX = 0x0 (null read target)</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">Access violation at address 0x0</span>
+  <span class="c-bullet">✓</span>  <span class="c-muted">Fault in AEnemy::Tick (user code)</span>
+  <span class="c-muted">✗  No deallocation in stack (not UAF)</span>
 
-<span class="c-divider">─── THREADS (4 active) ───────────────────────</span>
-<span class="c-bullet">●</span> <span class="c-red">Thread 0 [CRASHING]</span>   GameThread
-<span class="c-muted">  Thread 1              RenderThread</span>
-<span class="c-muted">  Thread 2              TaskGraph Worker</span>
-<span class="c-muted">  Thread 3              Audio Worker</span>
+<span class="c-divider">─── WINDBG PLAN ──────────────────────────────</span>
+<span class="c-label">1</span>  <span class="c-code">!analyze -v</span>
+   <span class="c-muted">Full automated analysis</span>
+<span class="c-label">2</span>  <span class="c-code">~~[0x1a4c]s; k</span>
+   <span class="c-muted">Switch to crashing thread, print stack</span>
+<span class="c-label">3</span>  <span class="c-code">dt AEnemy @rcx</span>
+   <span class="c-muted">Inspect object at null register</span>
+<span class="c-label">4</span>  <span class="c-code">!heap -p -a 0x0</span>
+   <span class="c-muted">Check heap metadata at fault address</span>
 
-<span class="c-divider">─── MODULES ──────────────────────────────────</span>
-<span class="c-func">UE4Editor-MyGame.dll</span>  <span class="c-finding">v1.2.3</span>  <span class="c-bullet">PDB ✓</span>
-<span class="c-muted">UE4Editor.exe          v5.3.0  PDB ✓</span>
-<span class="c-muted">ntdll.dll              v10.0   PDB (MS Server)</span></code></pre>
+<span class="c-divider">─── BLAST RADIUS ─────────────────────────────</span>
+<span class="c-label">Severity</span>  <span class="c-red">CRITICAL</span>
+<span class="c-label">Scope</span>     <span class="c-muted">AEnemy::Tick — game thread crash</span></code></pre>
           </div>
         </div>
       </div>

@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Changelog — CrashCatch</title>
-  <meta name="description" content="CrashCatch release notes. v0.2.1-beta: batch analysis, crash comparison, folder watcher, GitHub issue export, auto-updater, license activation, and more.">
+  <meta name="description" content="CrashCatch release notes. v0.3.0-beta: Engineer Mode — deterministic crash analysis with hypotheses, WinDbg plans, fix checklists, and blast radius. No API key required.">
   <meta property="og:title" content="Changelog — CrashCatch">
-  <meta property="og:description" content="CrashCatch release notes. v0.2.1-beta now available — batch analysis, crash comparison, folder watcher, GitHub issue export, and auto-updater.">
+  <meta property="og:description" content="CrashCatch release notes. v0.3.0-beta now available — Engineer Mode generates a full debug session plan from any crash dump. Offline, instant, no API key.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://crashcatchlabs.com/changelog.html">
   <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
@@ -127,6 +127,47 @@
 
         <div class="changelog-entry">
           <div class="changelog-version-row">
+            <span class="changelog-version">v0.3.0</span>
+            <span class="changelog-badge">Beta</span>
+            <span class="changelog-date">April 2026</span>
+          </div>
+
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;">
+            Introduces Engineer Mode, a dedicated analysis tab that generates a complete debug session plan directly from the crash dump. Powered by a deterministic Rust engine with no AI, no API key, and no network required. Instant results, fully offline.
+          </p>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Engineer Mode</div>
+            <ul>
+              <li><strong>New tab: Engineer (Ctrl+0)</strong> a dedicated analysis view that produces a structured debug plan for any crash dump, generated entirely offline by a deterministic Rust engine.</li>
+              <li><strong>Competing hypotheses</strong> multiple theories ranked by confidence (0-100%), each with a list of supporting and contradicting evidence drawn from registers, exception codes, stack frames, and thread state.</li>
+              <li><strong>Exact WinDbg commands</strong> a step-by-step debug plan with real thread IDs, real register values, and real addresses from this specific dump, not generic advice.</li>
+              <li><strong>Source search patterns</strong> grep-compatible patterns targeting your code. System modules (ntdll, kernel32, ucrtbase, and others) are filtered out automatically so results focus on user code.</li>
+              <li><strong>Reproduction conditions</strong> timing dependency flag, memory pressure flag, and a conditions list derived from crash state.</li>
+              <li><strong>Context-aware fix checklist</strong> Unreal Engine projects receive UE-specific suggestions (TWeakObjectPtr, IsValid()). Non-UE projects receive standard C++ guidance.</li>
+              <li><strong>Blast radius assessment</strong> severity rating (low / medium / high / critical), scope, and an impact note for every crash.</li>
+              <li><strong>10 crash classes</strong> Null Pointer Dereference, Stack Overflow, Use-After-Free, Heap Corruption, Deadlock, Abort/Assert, Pure Virtual Call, Security Cookie Overrun, Out of Memory, Access Violation. Unreal Engine ensure() and check() failures are detected as a layer on top of any class.</li>
+              <li><strong>PDF export</strong> Engineer Mode output is included in the full PDF report: hypotheses as cards, WinDbg plan as a numbered table, search hints, reproduction conditions, fix checklist, and a color-coded blast radius badge.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Known Limitations</div>
+            <ul>
+              <li><strong>Windows x64 only</strong> no ARM64 support yet.</li>
+              <li><strong>Installer is unsigned</strong> Windows SmartScreen will warn on first run. Click "More info" then "Run anyway".</li>
+              <li><strong>Explain Mode requires an internet connection</strong> all other features, including Engineer Mode, work fully offline with no API key required.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-download">
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v0.3.0-beta</a>
+            <a href="docs-quickstart.html" style="font-size:0.875rem;color:var(--accent);">Quickstart guide &rarr;</a>
+          </div>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version-row">
             <span class="changelog-version">v0.2.1</span>
             <span class="changelog-badge">Beta</span>
             <span class="changelog-date">March 2026</span>
@@ -192,7 +233,7 @@
             <ul>
               <li><strong>Windows x64 only</strong> no ARM64 support yet.</li>
               <li><strong>Installer is unsigned</strong> Windows SmartScreen will warn on first run. Click "More info" then "Run anyway".</li>
-              <li><strong>Explain Mode and Engineer Mode require an internet connection</strong> all other features work fully offline.</li>
+              <li><strong>Explain Mode requires an internet connection</strong> all other features, including Engineer Mode, work fully offline with no API key required.</li>
             </ul>
           </div>
 
