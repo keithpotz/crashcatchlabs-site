@@ -960,6 +960,9 @@ code, pre {
   text-underline-offset: 3px;
 }
 .prose a:hover { color: var(--accent-hover); }
+.prose a.btn { text-decoration: none; color: inherit; }
+.prose a.btn-primary { color: #fff; }
+.prose a.btn-primary:hover { color: #fff; }
 
 .prose strong { color: var(--text); font-weight: 600; }
 
