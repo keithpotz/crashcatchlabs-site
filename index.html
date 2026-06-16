@@ -49,7 +49,7 @@
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD",
-          "availability": "https://schema.org/PreOrder"
+          "availability": "https://schema.org/InStock"
         }
       }
     ]
@@ -66,11 +66,11 @@
       </a>
       <ul class="nav-links" role="list">
         <li><a href="#features">Features</a></li>
-        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#get-started">Download</a></li>
         <li><a href="docs.html">Docs</a></li>
         <li><a href="blog-index.html">Blog</a></li>
         <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Free</a></li>
       </ul>
     </div>
   </nav>
@@ -80,7 +80,7 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container hero-inner">
       <div class="hero-text">
-        <div class="hero-badge">v0.3.0-beta · Windows-first · Open-Core</div>
+        <div class="hero-badge">v1.0.0 · Windows-first · Free · Open-Core</div>
         <h1>Understand Your<br>C++ Crashes.</h1>
         <p class="hero-sub">Windows-first crash intelligence for Unreal Engine and native C++ applications.</p>
         <p class="hero-support">Stop reading raw stack traces. Start understanding root causes.</p>
@@ -89,7 +89,7 @@
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Download Beta
+            Download Free
           </a>
           <a href="about.html" class="btn btn-ghost">See What We're Building &rarr;</a>
         </div>
@@ -232,7 +232,7 @@
             </tr>
             <tr>
               <td class="col-feature">Pricing</td>
-              <td class="col-us"><span class="compare-check">✓</span> $150 one-time</td>
+              <td class="col-us"><span class="compare-check">✓</span> Free</td>
               <td><span class="compare-cross">✗</span> $26/mo minimum</td>
               <td><span class="compare-check">✓</span> Free</td>
               <td><span class="compare-cross">✗</span> $200+/mo</td>
@@ -478,7 +478,67 @@ Stack:
     </div>
   </section>
 
-  <!-- ── Section 4: Team Tier ── -->
+  <!-- ── Section 4: CrashCatch Intel ── -->
+  <section class="section intel-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">CrashCatch Intel</div>
+        <h2>Deeper analysis.<br>Without lifting a finger.</h2>
+        <p>The Intel Engine runs automatically on every dump. No API key, no network, no configuration. It flags patterns that would take you hours to spot manually.</p>
+      </div>
+
+      <div class="intel-grid">
+        <div class="intel-card">
+          <div class="intel-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="7" cy="10" r="4" stroke="#3b9dff" stroke-width="1.5"/>
+              <circle cx="13" cy="10" r="4" stroke="#3b9dff" stroke-width="1.5"/>
+              <path d="M9 10h2" stroke="#3b9dff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4>Thread deadlock detection</h4>
+          <p>Identifies threads blocked in known wait functions and surfaces them as findings. No more manually correlating thread state.</p>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 4v12M6 8l4-4 4 4" stroke="#3b9dff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="3" y="15" width="14" height="2" rx="1" fill="#3b9dff" fill-opacity="0.3"/>
+            </svg>
+          </div>
+          <h4>Register near-null analysis</h4>
+          <p>Flags registers with values under 0x10000 alongside zero detection. Catches near-null pointer bugs that raw output buries in hex.</p>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="5" width="14" height="10" rx="2" stroke="#3b9dff" stroke-width="1.5"/>
+              <path d="M7 10h6M10 7v6" stroke="#3b9dff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4>Crash signature deduplication</h4>
+          <p>Tracks unique crash signatures across your session and badges duplicates on the toolbar. Know instantly if you are looking at a new crash or one you have seen before.</p>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 4h12v12H4z" stroke="#3b9dff" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+              <path d="M8 9h4M8 12h2" stroke="#3b9dff" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="14" cy="6" r="3" fill="#ff6b6b" fill-opacity="0.2" stroke="#ff6b6b" stroke-width="1.2"/>
+              <path d="M13.3 5.3l1.4 1.4M14.7 5.3l-1.4 1.4" stroke="#ff6b6b" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4>Missing PDB report</h4>
+          <p>One-click list of every module with unresolved symbols. Know exactly which PDB files you need to get full symbolication on any dump.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 5: Team Tier ── -->
   <section class="section team-tier">
     <div class="container">
       <div class="section-header">
@@ -551,88 +611,45 @@ Stack:
     </div>
   </section>
 
-  <!-- ── Pricing ── -->
-  <section class="section pricing" id="pricing">
+  <!-- ── Get Started ── -->
+  <section class="section get-started" id="get-started">
     <div class="container">
       <div class="section-header">
-        <h2>Planned pricing.<br>No surprises.</h2>
-        <p>This is what CrashCatch will cost at launch. Nothing is on sale yet sign up to be notified when early access opens.</p>
+        <div class="section-label">Download</div>
+        <h2>Get started in minutes.<br>Free. No account required.</h2>
+        <p>CrashCatch Analyze is free to download and use with no limits. The analysis engine is Apache 2.0 open source. Cloud team features are coming as an optional tier — nothing will ever be taken from the desktop app.</p>
       </div>
 
-      <div class="pricing-notice">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="8" cy="8" r="7" stroke="#3b9dff" stroke-width="1.4"/>
-          <path d="M8 5v4M8 11v.5" stroke="#3b9dff" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-        Beta is now available. Prices shown are planned and subject to change. <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" target="_blank" rel="noopener noreferrer">Download the beta</a> to get started.
+      <div class="gs-steps">
+        <div class="gs-step">
+          <div class="gs-step-num">1</div>
+          <div class="gs-step-body">
+            <h4>Download the app</h4>
+            <p>Windows 10/11 x64. ~50 MB installer. No account, no license key required.</p>
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v1.0.0</a>
+          </div>
+        </div>
+        <div class="gs-step">
+          <div class="gs-step-num">2</div>
+          <div class="gs-step-body">
+            <h4>Add one line to your C++ app</h4>
+            <p>The open-source SDK captures crash dumps automatically. One header, zero dependencies, no build system changes.</p>
+            <a href="docs-quickstart.html" class="btn btn-ghost">Quickstart guide &rarr;</a>
+          </div>
+        </div>
+        <div class="gs-step">
+          <div class="gs-step-num">3</div>
+          <div class="gs-step-body">
+            <h4>Drop a .dmp and get answers</h4>
+            <p>Drag any crash dump onto CrashCatch. Get a symbolicated trace, Intel findings, Engineer Mode debug plan, and optional AI explanation in seconds.</p>
+          </div>
+        </div>
       </div>
 
-      <div class="pricing-grid">
-
-        <div class="pricing-card">
-          <div class="pricing-tier">Student</div>
-          <div class="pricing-price"><span class="price-amount">Free</span></div>
-          <p class="pricing-desc">For students and hobbyists learning crash analysis on Windows.</p>
-          <ul class="pricing-features">
-            <li>Local-only analysis</li>
-            <li>Up to 50 crashes / month</li>
-            <li>Basic stack trace output</li>
-            <li>Single project</li>
-            <li>Explain Mode</li>
-          </ul>
-          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Download Beta</a>
-        </div>
-
-        <div class="pricing-card pricing-card-indie">
-          <div class="pricing-tier">Indie</div>
-          <div class="pricing-price">
-            <span class="price-amount">$150</span>
-            <span class="price-term">one-time</span>
-          </div>
-          <p class="pricing-desc">For solo developers and small studios shipping C++ on Windows.</p>
-          <ul class="pricing-features">
-            <li>Full local analysis</li>
-            <li>Explain Mode</li>
-            <li>Engineer Mode</li>
-            <li>PDF export</li>
-            <li>Unlimited crashes</li>
-          </ul>
-          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
-        </div>
-
-        <div class="pricing-card pricing-card-team pricing-featured">
-          <div class="pricing-featured-label">Coming Soon</div>
-          <div class="pricing-tier">Team</div>
-          <div class="pricing-price">
-            <span class="price-amount">$100</span>
-            <span class="price-term">/ month</span>
-          </div>
-          <p class="pricing-desc">For studios who need aggregation, dashboards, and team collaboration.</p>
-          <ul class="pricing-features">
-            <li>Everything in Indie</li>
-            <li>Cloud aggregation</li>
-            <li>Org dashboards</li>
-            <li>Project tracking</li>
-            <li>Regression detection</li>
-            <li>Email &amp; webhook alerts</li>
-          </ul>
-          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Beta</a>
-        </div>
-
-        <div class="pricing-card">
-          <div class="pricing-tier">Enterprise</div>
-          <div class="pricing-price"><span class="price-amount">Custom</span></div>
-          <p class="pricing-desc">For large studios with custom symbol hosting, SLAs, and Windows workers.</p>
-          <ul class="pricing-features">
-            <li>Everything in Team</li>
-            <li>Symbol server hosting</li>
-            <li>Windows analysis workers</li>
-            <li>Dedicated support</li>
-            <li>SLA agreement</li>
-          </ul>
-          <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Download Beta</a>
-        </div>
-
+      <div class="open-core-note">
+        <span class="oc-badge">Open Core</span>
+        <p>The crash capture SDK is Apache 2.0 and free forever. CrashCatch Analyze is free with no usage limits. Cloud team features — aggregation, dashboards, regression tracking, team collaboration — are coming as an optional subscription. The desktop app will always be complete without one.</p>
+        <a href="https://github.com/keithpotz/CrashCatch" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">View on GitHub &rarr;</a>
       </div>
     </div>
   </section>
@@ -687,13 +704,13 @@ Stack:
     <div class="container final-cta-inner">
       <h2>Stop guessing.<br>Start understanding.</h2>
       <p style="color:var(--text-muted); margin-bottom:32px; font-size:1rem; line-height:1.65;">
-        The beta is live. Download CrashCatch and start understanding your C++ crashes today.
+        CrashCatch v1.0.0 is free to download. Start understanding your C++ crashes today.
       </p>
       <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
         <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Download Beta
+        Download Free
       </a>
       <p class="final-cta-sub">Built for C++ engineers who want answers, not raw hex.</p>
     </div>
@@ -713,7 +730,7 @@ Stack:
           <h5>Product</h5>
           <ul>
             <li><a href="#features">Features</a></li>
-            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#get-started">Download</a></li>
             <li><a href="changelog.html">Changelog</a></li>
             <li><a href="status.html">Status</a></li>
           </ul>

@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Changelog — CrashCatch</title>
-  <meta name="description" content="CrashCatch release notes. v0.3.0-beta: Engineer Mode — deterministic crash analysis with hypotheses, WinDbg plans, fix checklists, and blast radius. No API key required.">
+  <meta name="description" content="CrashCatch release notes. v1.0.0: now free to use, security hardening, malicious dump protection, UNC path blocking. Full history from v0.2.0-beta onward.">
   <meta property="og:title" content="Changelog — CrashCatch">
-  <meta property="og:description" content="CrashCatch release notes. v0.3.0-beta now available — Engineer Mode generates a full debug session plan from any crash dump. Offline, instant, no API key.">
+  <meta property="og:description" content="CrashCatch release notes. v1.0.0 is now free with no limits — full crash analysis, Engineer Mode, Explain Mode, PDF export, and batch analysis included.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://crashcatchlabs.com/changelog.html">
   <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
@@ -102,11 +102,11 @@
       </a>
       <ul class="nav-links" role="list">
         <li><a href="/#features">Features</a></li>
-        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/#get-started">Download</a></li>
         <li><a href="docs.html">Docs</a></li>
         <li><a href="blog-index.html">Blog</a></li>
         <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Beta</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Free</a></li>
       </ul>
     </div>
   </nav>
@@ -124,6 +124,49 @@
   <main class="page-body">
     <div class="container">
       <div class="prose">
+
+        <div class="changelog-entry">
+          <div class="changelog-version-row">
+            <span class="changelog-version">v1.0.0</span>
+            <span class="changelog-badge" style="background:rgba(63,185,80,0.12);border-color:rgba(63,185,80,0.3);color:#3fb950;">Stable</span>
+            <span class="changelog-date">June 2026</span>
+          </div>
+
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;">
+            First stable release. CrashCatch Analyze is now free to use with no license key required and no usage limits. This release adds security hardening against malicious crash dumps, UNC path blocking to prevent credential leaks, and several analysis and workflow improvements that were backported from internal builds.
+          </p>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Security</div>
+            <ul>
+              <li><strong>Malicious dump protection</strong> magic byte validation and a 500 MB size cap are enforced before any analysis begins. Crafted .dmp files designed to exploit the parser are rejected at the gate.</li>
+              <li><strong>UNC path blocking</strong> symbol paths cannot be configured to point to UNC network shares (<code>\\server\share</code>). This prevents an attacker from placing a malicious dump that triggers an outbound NTLM authentication to a controlled server.</li>
+              <li><strong>Key-safe settings export</strong> the settings export file never includes API keys or license keys. Sharing your settings file with a teammate cannot accidentally leak credentials.</li>
+              <li><strong>Content Security Policy</strong> strict CSP is enforced throughout the entire app UI, preventing any injected content from executing.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Licensing</div>
+            <ul>
+              <li><strong>Now free</strong> CrashCatch Analyze is free to use with no license key, no usage limits, and no expiry date. All features including Engineer Mode, Explain Mode, batch analysis, PDF export, and crash comparison are included.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-section">
+            <div class="changelog-section-label">Known Limitations</div>
+            <ul>
+              <li><strong>Windows x64 only</strong> no ARM64 support yet.</li>
+              <li><strong>Installer is unsigned</strong> Windows SmartScreen will warn on first run. Click "More info" then "Run anyway".</li>
+              <li><strong>Explain Mode requires an internet connection</strong> all other features work fully offline with no API key required.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-download">
+            <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download v1.0.0</a>
+            <a href="docs-quickstart.html" style="font-size:0.875rem;color:var(--accent);">Quickstart guide &rarr;</a>
+          </div>
+        </div>
 
         <div class="changelog-entry">
           <div class="changelog-version-row">
@@ -304,7 +347,7 @@
           <h5>Product</h5>
           <ul>
             <li><a href="/#features">Features</a></li>
-            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="/#get-started">Download</a></li>
             <li><a href="changelog.html">Changelog</a></li>
             <li><a href="status.html">Status</a></li>
           </ul>

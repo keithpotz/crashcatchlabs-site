@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrashCatch v1.0.0: Free, Stable, and Security-Hardened — CrashCatch Blog</title>
+  <meta name="description" content="CrashCatch Analyze v1.0.0 is now free to use with no limits. This release adds malicious dump protection, UNC path blocking, and key-safe settings export.">
+  <meta property="og:title" content="CrashCatch v1.0.0: Free, Stable, and Security-Hardened">
+  <meta property="og:description" content="CrashCatch Analyze v1.0.0 is now free to use with no limits. This release adds malicious dump protection, UNC path blocking, and key-safe settings export.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-v1-release.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta property="article:published_time" content="2026-06-16">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="Release">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="Windows">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-v1-release.html">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "CrashCatch v1.0.0: Free, Stable, and Security-Hardened",
+    "description": "CrashCatch Analyze v1.0.0 is now free to use with no limits. This release adds malicious dump protection, UNC path blocking, and key-safe settings export.",
+    "url": "https://crashcatchlabs.com/blog-v1-release.html",
+    "datePublished": "2026-06-16",
+    "author": { "@type": "Organization", "name": "CrashCatch Labs" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": { "@type": "ImageObject", "url": "https://crashcatchlabs.com/logo.svg" }
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#get-started">Download</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="blog-index.html">Blog</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Free</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Release</div>
+        <h1>CrashCatch v1.0.0: Free, Stable, and Security-Hardened</h1>
+        <p>The desktop app is now free with no limits. This release brings security hardening, stability, and a model change that removes every barrier to getting started.</p>
+        <div class="page-meta">
+          June 16, 2026 &nbsp;·&nbsp; 5 min read &nbsp;·&nbsp;
+          <span class="post-tag">Release</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+
+      <div class="post-nav" style="margin-bottom:48px;">
+        <a href="blog-index.html" style="font-size:0.875rem;color:var(--accent);">&larr; All posts</a>
+      </div>
+
+      <div class="prose">
+
+        <p>Today we are releasing CrashCatch Analyze v1.0.0. It is free to download and use with no license key, no account, no usage limits, and no expiry date.</p>
+
+        <p>We shipped a beta last March to validate the core analysis workflow. Engineers sent us dumps. They used Engineer Mode on their own crashes. Several told us they found bugs they had been chasing for weeks. That was the signal we needed. The product is ready, and the right move is to remove every friction point between a developer and their first useful crash analysis.</p>
+
+        <h2>What changed from v0.3.0-beta</h2>
+
+        <p>The headline is the model change: every feature, including Engineer Mode, Explain Mode, batch analysis, PDF export, and crash comparison, is free. No tier. No key. No expiry.</p>
+
+        <p>Beyond that, v1.0.0 is a security hardening release.</p>
+
+        <h2>Malicious dump protection</h2>
+
+        <p>A crash dump is a raw snapshot of process memory. If an attacker can convince you to open a crafted .dmp file, they can attempt to exploit the parser. This is not theoretical: over the years, vulnerabilities have been found in WinDbg, in DbgHelp, and in several third-party crash analysis tools.</p>
+
+        <p>CrashCatch v1.0.0 enforces two gates before any dump is parsed:</p>
+
+        <ul>
+          <li><strong>Magic byte validation</strong> — the file must begin with the MDMP signature. Files that do not match are rejected immediately, before any parsing begins.</li>
+          <li><strong>500 MB size cap</strong> — legitimate minidumps are almost never this large. Files above the cap are refused. This prevents memory exhaustion attacks that abuse the parser's allocation path.</li>
+        </ul>
+
+        <p>Neither check requires network access. Both run locally, synchronously, before the Rust analysis engine sees a single byte of the file.</p>
+
+        <h2>UNC path blocking</h2>
+
+        <p>Symbol paths in CrashCatch can point to local directories where your PDB files live. In previous versions, nothing prevented you from pointing a symbol path at a UNC network share (<code>\\server\share\symbols</code>).</p>
+
+        <p>This matters because of how Windows resolves UNC paths. When CrashCatch attempts to load a PDB from a UNC path, Windows sends an NTLM authentication request to the server at that address. An attacker who controls a .dmp file can craft it to include a module whose PDB path points to a server they control. When you open the dump, your machine authenticates to that server, leaking your NTLM hash.</p>
+
+        <p>v1.0.0 blocks UNC paths at the settings level. You cannot configure a symbol path that begins with <code>\\</code>. The block happens before any network traffic is initiated.</p>
+
+        <h2>Key-safe settings export</h2>
+
+        <p>CrashCatch lets you export your configuration as a JSON file and import it on another machine. Before v1.0.0, this export included your Anthropic API key if one was configured.</p>
+
+        <p>Sharing a settings file with a teammate or posting it in a repo would accidentally leak that key. The v1.0.0 export intentionally omits all credential fields. API keys and license keys are never written to the exported file. If you import settings that were exported before this version, any key fields in the file are ignored.</p>
+
+        <h2>What is not changing</h2>
+
+        <p>The analysis is still fully local. Crash dumps never leave your machine unless you explicitly choose to share them. Engineer Mode is still a deterministic Rust engine with no API key and no network. Explain Mode still requires an Anthropic API key and internet connection. None of that changed.</p>
+
+        <p>Cloud team features — aggregation, dashboards, regression tracking, team collaboration — are still coming as an optional subscription tier. The desktop app will always be complete without it.</p>
+
+        <h2>Download</h2>
+
+        <p>v1.0.0 is available now. Windows 10/11 x64. The installer is not yet code-signed, so Windows SmartScreen will show a warning on first run. Click "More info" then "Run anyway".</p>
+
+        <p><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Download CrashCatch v1.0.0</a></p>
+
+        <p>If you run into anything, <a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release/issues" target="_blank" rel="noopener noreferrer">open an issue</a>. All feedback is read.</p>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#get-started">Download</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="why-crashcatch.html">Why CrashCatch</a></li>
+            <li><a href="blog-index.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

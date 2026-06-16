@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Security Risks in Crash Dump Analysis (and How to Avoid Them) — CrashCatch Blog</title>
+  <meta name="description" content="Opening a .dmp file from an untrusted source can leak your NTLM credentials, execute arbitrary code, or exhaust system memory. Here is how these attacks work and what CrashCatch does to block them.">
+  <meta property="og:title" content="The Security Risks in Crash Dump Analysis (and How to Avoid Them)">
+  <meta property="og:description" content="Opening a .dmp file from an untrusted source can leak your NTLM credentials or execute arbitrary code. Here is how these attacks work and what CrashCatch does to block them.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://crashcatchlabs.com/blog-crash-security.html">
+  <meta property="og:image" content="https://crashcatchlabs.com/og-image.png">
+  <meta property="article:published_time" content="2026-06-16">
+  <meta property="article:author" content="CrashCatch Labs">
+  <meta property="article:tag" content="Security">
+  <meta property="article:tag" content="C++">
+  <meta property="article:tag" content="Windows">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://crashcatchlabs.com/og-image.png">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://crashcatchlabs.com/blog-crash-security.html">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The Security Risks in Crash Dump Analysis (and How to Avoid Them)",
+    "description": "Opening a .dmp file from an untrusted source can leak your NTLM credentials, execute arbitrary code, or exhaust system memory. Here is how these attacks work and what CrashCatch does to block them.",
+    "url": "https://crashcatchlabs.com/blog-crash-security.html",
+    "datePublished": "2026-06-16",
+    "author": { "@type": "Organization", "name": "CrashCatch Labs" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CrashCatch Labs",
+      "logo": { "@type": "ImageObject", "url": "https://crashcatchlabs.com/logo.svg" }
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo" aria-label="CrashCatch home">
+        <img src="logo.svg" alt="CrashCatch" height="40">
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#get-started">Download</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="blog-index.html">Blog</a></li>
+        <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/keithpotz/Crash-Catch-Analyzer-Release" class="btn btn-sm" target="_blank" rel="noopener noreferrer">Download Free</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-label">Security</div>
+        <h1>The Security Risks in Crash Dump Analysis (and How to Avoid Them)</h1>
+        <p>Opening a .dmp file from an untrusted source is not as safe as it sounds. Here is what can go wrong and what a crash analysis tool needs to do about it.</p>
+        <div class="page-meta">
+          June 16, 2026 &nbsp;·&nbsp; 6 min read &nbsp;·&nbsp;
+          <span class="post-tag">Security</span>
+          <span class="post-tag">C++</span>
+          <span class="post-tag">Windows</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-body">
+    <div class="container">
+
+      <div class="post-nav" style="margin-bottom:48px;">
+        <a href="blog-index.html" style="font-size:0.875rem;color:var(--accent);">&larr; All posts</a>
+      </div>
+
+      <div class="prose">
+
+        <p>When a C++ developer receives a crash dump from a user, the natural response is to open it immediately in whatever analysis tool is at hand. The dump came from the user's machine. It is a diagnostic file. What could go wrong?</p>
+
+        <p>Quite a lot, as it turns out. A crash dump is a raw copy of process memory, and some of that memory is attacker-controlled. The format itself has fields a malicious actor can craft to trigger exploits in the tool reading it. This post covers the three most realistic attack vectors and what CrashCatch v1.0.0 does to defend against each one.</p>
+
+        <h2>Attack 1: Parser exploits via crafted dump files</h2>
+
+        <p>The Windows minidump format (MDMP) is not simple. It is a binary format with streams, directories, memory descriptors, and nested structures that point into the file. A parser must follow pointers, read lengths from attacker-controlled data, and allocate memory based on values it reads from the file.</p>
+
+        <p>Vulnerabilities in dump parsers are not theoretical. DbgHelp.dll, the Windows library used to parse minidumps, has had CVEs. Third-party crash analysis tools have had them too. The attack surface is any tool that opens an untrusted .dmp file without first validating that it is actually a minidump.</p>
+
+        <p>The most basic defense is magic byte validation: check that the first four bytes of the file are <code>4D 44 4D 50</code> (the ASCII string "MDMP") before parsing begins. If the bytes are not present, the file is not a minidump and should be rejected. This eliminates the entire class of attacks that involve disguising a non-dump file with a .dmp extension.</p>
+
+        <p>CrashCatch enforces magic byte validation as the first step before any parsing. Files that do not match are rejected with an error message, and no further bytes of the file are read.</p>
+
+        <h2>Attack 2: Memory exhaustion via oversized dumps</h2>
+
+        <p>Legitimate minidumps are small. A full minidump with heap data from a typical application is under 200 MB. A MiniDumpWithFullMemory dump of a large application might reach a few hundred megabytes. Anything over 500 MB is almost certainly not a legitimate dump from a normal application.</p>
+
+        <p>An attacker who can get you to open a crafted file can craft a dump with a header claiming the file is several gigabytes. A naive parser will attempt to allocate that memory. On a 32-bit process this causes an immediate crash. On a 64-bit process it can exhaust available RAM and virtual address space, causing the analysis tool and potentially other running processes to fail.</p>
+
+        <p>CrashCatch enforces a 500 MB size cap checked against the file's actual size on disk before any parsing begins. Files above the cap are rejected. This prevents the parser from ever attempting to allocate attacker-controlled amounts of memory.</p>
+
+        <h2>Attack 3: NTLM credential theft via UNC symbol paths</h2>
+
+        <p>This attack is subtler and specific to crash analysis tools that support symbol loading. It works as follows.</p>
+
+        <p>When CrashCatch analyzes a dump, it reads the module list embedded in the dump. Each module entry can contain a path where the module's PDB file was located at build time. This path is written into the dump by the compiler and linker at build time and is typically something like <code>C:\src\MyApp\x64\Release\MyApp.pdb</code>.</p>
+
+        <p>But nothing in the MDMP format requires the PDB path to be a local path. An attacker who can control the build process, or who can modify a dump file after it is generated, can set the PDB path to a UNC path: <code>\\attacker.example.com\fake\MyApp.pdb</code>.</p>
+
+        <p>When the analysis tool tries to load symbols, Windows attempts to connect to <code>attacker.example.com</code> over SMB. SMB connections on Windows use NTLM authentication by default. Your machine sends an NTLM challenge response to the server. The server logs it. With a captured NTLM hash and a GPU cluster, the hash can be cracked offline. On a domain machine, the hash can often be used directly in a pass-the-hash attack without cracking.</p>
+
+        <p>The attacker never needs code execution. They just need you to open a dump file while your symbol loader is configured to follow UNC paths.</p>
+
+        <h2>How CrashCatch blocks this</h2>
+
+        <p>CrashCatch v1.0.0 blocks UNC paths at the settings level. When you configure symbol search paths, any path beginning with <code>\\</code> is rejected with an error. You cannot save a UNC path to settings, and the symbol loader will not follow UNC paths embedded in dump module entries.</p>
+
+        <p>This block applies regardless of whether the UNC path came from your settings or from data inside a dump file. If the resolved PDB path for any module is a UNC path, it is skipped.</p>
+
+        <h2>What about dumps you receive from users</h2>
+
+        <p>The most common scenario where these attacks are relevant: a user submits a crash dump by email or through a support channel, and a developer on your team opens it directly.</p>
+
+        <p>For dumps from your own application collected by the CrashCatch Runtime SDK, the risk is low. The SDK writes dumps in a controlled environment, and the PDB paths come from your own build system. You know where those paths point.</p>
+
+        <p>For dumps collected by your users' own crash collectors, or dumps submitted through arbitrary channels, treat the file as untrusted. The protections in CrashCatch v1.0.0 are designed for exactly this scenario: magic byte validation, size cap enforcement, and UNC path blocking all apply before and during analysis of any dump file, regardless of its source.</p>
+
+        <h2>Further reading</h2>
+
+        <ul>
+          <li><a href="security.html">CrashCatch responsible disclosure policy</a></li>
+          <li><a href="docs-quickstart.html">Quickstart: opening your first dump</a></li>
+          <li><a href="changelog.html">v1.0.0 release notes</a></li>
+        </ul>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.svg" alt="CrashCatch" height="32">
+        <p>Windows-first crash intelligence<br>for C++ &amp; Unreal Engine.</p>
+        <p class="footer-copy">&copy; 2026 CrashCatch Labs</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#get-started">Download</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="status.html">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Developers</h5>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="api.html">API Reference</a></li>
+            <li><a href="https://github.com/keithpotz/CrashCatch" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="why-crashcatch.html">Why CrashCatch</a></li>
+            <li><a href="blog-index.html">Blog</a></li>
+            <li><a href="mailto:support@crashcatchlabs.com">Support</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
